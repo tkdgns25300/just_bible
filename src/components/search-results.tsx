@@ -114,21 +114,21 @@ export default function SearchResults({
           {visibleResults.map((result) => (
             <li
               key={`${result.bookName}-${result.chapter}-${result.verse}`}
-              className="group rounded-lg border border-gray-200 px-4 py-3
+              onClick={() => setContextTarget(result)}
+              className="group cursor-pointer rounded-lg border border-gray-200 px-4 py-3
                 transition-colors duration-150
-                dark:border-gray-700"
+                hover:bg-gray-50 active:bg-gray-100
+                dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700"
             >
               <div className="mb-1 flex items-center justify-between">
-                <button
-                  onClick={() => setContextTarget(result)}
-                  className="text-sm font-medium text-gray-500 transition-colors
-                    hover:text-blue-600 hover:underline
-                    dark:text-gray-400 dark:hover:text-blue-400"
-                >
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   {result.bookName} {result.chapter}:{result.verse}
-                </button>
+                </p>
                 <button
-                  onClick={() => handleCopy(result)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopy(result);
+                  }}
                   className="text-gray-400 opacity-0 transition-opacity duration-150
                     hover:text-gray-600 group-hover:opacity-100
                     dark:text-gray-500 dark:hover:text-gray-300"
@@ -136,13 +136,7 @@ export default function SearchResults({
                   <CopyIcon />
                 </button>
               </div>
-              <p
-                onClick={() => handleCopy(result)}
-                className={`cursor-pointer rounded transition-colors
-                  hover:bg-gray-50 active:bg-gray-100
-                  dark:hover:bg-gray-800 dark:active:bg-gray-700
-                  ${fontSizeClass}`}
-              >
+              <p className={fontSizeClass}>
                 <HighlightedText text={result.text} keyword={keyword} />
               </p>
             </li>
