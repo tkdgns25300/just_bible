@@ -41,7 +41,11 @@ export default function BibleSearch() {
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
       {hasResults && (
         <div className="mt-6 flex w-full justify-center">
-          <SearchResults results={results} keyword={keyword} />
+          <SearchResults
+            results={results}
+            keyword={keyword}
+            translationName={bible?.translation ?? ""}
+          />
         </div>
       )}
     </main>
