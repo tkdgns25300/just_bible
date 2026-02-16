@@ -31,3 +31,5 @@ export const FONT_SIZES = [
   { label: "크게", class: "text-xl leading-relaxed" },
   { label: "최대", class: "text-2xl leading-relaxed" },
 ] as const;
+
+export type SearchScope = "all" | "old" | "new" | number;

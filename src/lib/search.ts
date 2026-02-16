@@ -1,7 +1,16 @@
-import { BOOKS } from "@/constants/bible";
-import { MAX_KEYWORD_RESULTS } from "@/constants/search";
+import { BOOKS, type BookMeta } from "@/constants/bible";
+import { MAX_KEYWORD_RESULTS, type SearchScope } from "@/constants/search";
 import { getChosung, isChosung } from "@/lib/chosung";
-import type { BibleTranslation } from "@/types/bible";
+import type { BibleTranslation, Book } from "@/types/bible";
+
+const OLD_TESTAMENT_MAX_ID = 39;
+
+function filterBooks(books: Book[], scope: SearchScope): Book[] {
+  if (scope === "all") return books;
+  if (scope === "old") return books.filter((b) => b.id <= OLD_TESTAMENT_MAX_ID);
+  if (scope === "new") return books.filter((b) => b.id > OLD_TESTAMENT_MAX_ID);
+  return books.filter((b) => b.id === scope);
+}
 
 export interface SearchResult {
   bookName: string;
@@ -132,13 +141,14 @@ export function parseQuery(query: string): ParsedQuery {
   return { mode: "keyword", keyword: trimmed };
 }
 
-export function searchBible(bible: BibleTranslation, query: string): SearchResult[] {
+export function searchBible(bible: BibleTranslation, query: string, scope: SearchScope = "all"): SearchResult[] {
   const parsed = parseQuery(query);
 
   if (parsed.mode === "keyword") {
     if (!parsed.keyword) return [];
     const results: SearchResult[] = [];
-    for (const book of bible.books) {
+    const books = filterBooks(bible.books, scope);
+    for (const book of books) {
       for (const chapter of book.chapters) {
         for (const verse of chapter.verses) {
           if (verse.text.includes(parsed.keyword)) {

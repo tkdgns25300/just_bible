@@ -11,6 +11,7 @@ import {
   STORAGE_KEY_FONT_SIZE,
   STORAGE_KEY_TRANSLATION,
   type CopyFormatId,
+  type SearchScope,
 } from "@/constants/search";
 import { useBible } from "@/hooks/use-bible";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -20,12 +21,14 @@ import SearchResults from "@/components/search-results";
 import TranslationTabs from "@/components/translation-tabs";
 import CopyFormatSelector from "@/components/copy-format-selector";
 import FontSizeControl from "@/components/font-size-control";
+import ScopeFilter from "@/components/scope-filter";
 
 export default function BibleSearch() {
   const [query, setQuery] = useState("");
   const [translationCode, setTranslationCode] = useState(DEFAULT_TRANSLATION_CODE);
   const [copyFormat, setCopyFormat] = useState<CopyFormatId>(DEFAULT_COPY_FORMAT);
   const [fontSizeIndex, setFontSizeIndex] = useState(DEFAULT_FONT_SIZE);
+  const [scope, setScope] = useState<SearchScope>("all");
 
   useEffect(() => {
     const savedTranslation = localStorage.getItem(STORAGE_KEY_TRANSLATION);
@@ -37,6 +40,7 @@ export default function BibleSearch() {
     const savedFontSize = localStorage.getItem(STORAGE_KEY_FONT_SIZE);
     if (savedFontSize) setFontSizeIndex(Number(savedFontSize));
   }, []);
+
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
   const { bible, isLoading } = useBible(translationCode);
 
@@ -57,8 +61,8 @@ export default function BibleSearch() {
 
   const results = useMemo(() => {
     if (!bible || !debouncedQuery.trim()) return [];
-    return searchBible(bible, debouncedQuery);
-  }, [bible, debouncedQuery]);
+    return searchBible(bible, debouncedQuery, scope);
+  }, [bible, debouncedQuery, scope]);
 
   const keyword = useMemo(() => {
     const parsed = parseQuery(debouncedQuery);
@@ -83,6 +87,7 @@ export default function BibleSearch() {
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
       <div className="mt-4 flex flex-col items-center gap-2">
         <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
+        <ScopeFilter scope={scope} onChange={setScope} />
         <div className="flex items-center gap-3">
           <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
           <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
