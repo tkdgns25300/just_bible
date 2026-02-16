@@ -35,4 +35,3 @@ export const FONT_SIZES = [
 export type SearchScope = "all" | "old" | "new" | number;
 
 export const STORAGE_KEY_THEME = "just-bible-theme";
-export type Theme = "light" | "dark" | "system";
