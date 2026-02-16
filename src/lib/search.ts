@@ -51,7 +51,7 @@ const VERSE = /^(.+?)\s*(\d+)\s*[:장]\s*(\d+)\s*절?$/;
 // 장 범위: "창 1-3", "창세기 1~3장"
 const CHAPTER_RANGE = /^(.+?)\s*(\d+)\s*[-~]\s*(\d+)\s*장?$/;
 // 장: "창 1", "창세기 1장"
-const CHAPTER = /^(.+?)\s+(\d+)\s*장?$/;
+const CHAPTER = /^(.+?)\s*(\d+)\s*장?$/;
 
 export function parseQuery(query: string): ParsedQuery {
   const trimmed = query.trim();
