@@ -10,8 +10,13 @@ const PLACEHOLDER_EXAMPLES = [
   "ㅊㅅㄱ 1:1",
 ];
 
-export default function SearchBar() {
-  const [query, setQuery] = useState("");
+interface SearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+  isLoading?: boolean;
+}
+
+export default function SearchBar({ value, onChange, isLoading }: SearchBarProps) {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
   function handleFocus() {
@@ -22,10 +27,10 @@ export default function SearchBar() {
     <div className="w-full max-w-xl px-4">
       <input
         type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         onFocus={handleFocus}
-        placeholder={PLACEHOLDER_EXAMPLES[placeholderIndex]}
+        placeholder={isLoading ? "로딩 중..." : PLACEHOLDER_EXAMPLES[placeholderIndex]}
         className="w-full rounded-full border border-gray-300 bg-transparent px-6 py-3
           text-base shadow-sm outline-none
           transition-shadow duration-200
