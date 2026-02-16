@@ -11,6 +11,7 @@ interface SearchResultsProps {
   keyword?: string;
   translationName: string;
   copyFormat: CopyFormatId;
+  fontSizeClass: string;
 }
 
 function CopyIcon() {
@@ -58,6 +59,7 @@ export default function SearchResults({
   keyword,
   translationName,
   copyFormat,
+  fontSizeClass,
 }: SearchResultsProps) {
   const [visibleCount, setVisibleCount] = useState(RESULTS_PER_PAGE);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -124,7 +126,7 @@ export default function SearchResults({
                   <CopyIcon />
                 </span>
               </div>
-              <p className="text-base leading-relaxed">
+              <p className={fontSizeClass}>
                 <HighlightedText text={result.text} keyword={keyword} />
               </p>
             </li>
