@@ -1,17 +1,33 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SEARCH_DEBOUNCE_MS } from "@/constants/search";
+import {
+  DEFAULT_TRANSLATION_CODE,
+  SEARCH_DEBOUNCE_MS,
+  STORAGE_KEY_TRANSLATION,
+} from "@/constants/search";
 import { useBible } from "@/hooks/use-bible";
 import { useDebounce } from "@/hooks/use-debounce";
 import { parseQuery, searchBible } from "@/lib/search";
 import SearchBar from "@/components/search-bar";
 import SearchResults from "@/components/search-results";
+import TranslationTabs from "@/components/translation-tabs";
+
+function getInitialTranslation(): string {
+  if (typeof window === "undefined") return DEFAULT_TRANSLATION_CODE;
+  return localStorage.getItem(STORAGE_KEY_TRANSLATION) ?? DEFAULT_TRANSLATION_CODE;
+}
 
 export default function BibleSearch() {
   const [query, setQuery] = useState("");
+  const [translationCode, setTranslationCode] = useState(getInitialTranslation);
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
-  const { bible, isLoading } = useBible();
+  const { bible, isLoading } = useBible(translationCode);
+
+  function handleTranslationChange(code: string) {
+    setTranslationCode(code);
+    localStorage.setItem(STORAGE_KEY_TRANSLATION, code);
+  }
 
   const results = useMemo(() => {
     if (!bible || !debouncedQuery.trim()) return [];
@@ -39,6 +55,7 @@ export default function BibleSearch() {
         Just Bible
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
+      <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
       {hasResults && (
         <div className="mt-6 flex w-full justify-center">
           <SearchResults
