@@ -101,6 +101,7 @@ export default function BibleSearch() {
             translationName={bible?.translation ?? ""}
             copyFormat={copyFormat}
             fontSizeClass={FONT_SIZES[fontSizeIndex].class}
+            bible={bible}
           />
         </div>
       )}

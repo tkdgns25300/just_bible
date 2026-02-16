@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { RESULTS_PER_PAGE, type CopyFormatId } from "@/constants/search";
 import { formatCopyText } from "@/lib/copy-format";
 import type { SearchResult } from "@/lib/search";
+import type { BibleTranslation } from "@/types/bible";
+import ContextViewer from "@/components/context-viewer";
 import Toast from "@/components/toast";
 
 interface SearchResultsProps {
@@ -12,6 +14,7 @@ interface SearchResultsProps {
   translationName: string;
   copyFormat: CopyFormatId;
   fontSizeClass: string;
+  bible: BibleTranslation | null;
 }
 
 function CopyIcon() {
@@ -60,9 +63,11 @@ export default function SearchResults({
   translationName,
   copyFormat,
   fontSizeClass,
+  bible,
 }: SearchResultsProps) {
   const [visibleCount, setVisibleCount] = useState(RESULTS_PER_PAGE);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [contextTarget, setContextTarget] = useState<SearchResult | null>(null);
   const observerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,24 +114,35 @@ export default function SearchResults({
           {visibleResults.map((result) => (
             <li
               key={`${result.bookName}-${result.chapter}-${result.verse}`}
-              onClick={() => handleCopy(result)}
-              className="group cursor-pointer rounded-lg border border-gray-200 px-4 py-3
+              className="group rounded-lg border border-gray-200 px-4 py-3
                 transition-colors duration-150
-                hover:bg-gray-50 active:bg-gray-100
-                dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+                dark:border-gray-700"
             >
               <div className="mb-1 flex items-center justify-between">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                <button
+                  onClick={() => setContextTarget(result)}
+                  className="text-sm font-medium text-gray-500 transition-colors
+                    hover:text-blue-600 hover:underline
+                    dark:text-gray-400 dark:hover:text-blue-400"
+                >
                   {result.bookName} {result.chapter}:{result.verse}
-                </p>
-                <span
+                </button>
+                <button
+                  onClick={() => handleCopy(result)}
                   className="text-gray-400 opacity-0 transition-opacity duration-150
-                    group-hover:opacity-100 dark:text-gray-500"
+                    hover:text-gray-600 group-hover:opacity-100
+                    dark:text-gray-500 dark:hover:text-gray-300"
                 >
                   <CopyIcon />
-                </span>
+                </button>
               </div>
-              <p className={fontSizeClass}>
+              <p
+                onClick={() => handleCopy(result)}
+                className={`cursor-pointer rounded transition-colors
+                  hover:bg-gray-50 active:bg-gray-100
+                  dark:hover:bg-gray-800 dark:active:bg-gray-700
+                  ${fontSizeClass}`}
+              >
                 <HighlightedText text={result.text} keyword={keyword} />
               </p>
             </li>
@@ -137,6 +153,20 @@ export default function SearchResults({
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
+      {contextTarget && bible && (() => {
+        const book = bible.books.find((b) => b.name === contextTarget.bookName);
+        const chapter = book?.chapters.find((c) => c.chapter === contextTarget.chapter);
+        if (!book || !chapter) return null;
+        return (
+          <ContextViewer
+            bookName={contextTarget.bookName}
+            chapter={chapter}
+            highlightVerse={contextTarget.verse}
+            fontSizeClass={fontSizeClass}
+            onClose={() => setContextTarget(null)}
+          />
+        );
+      })()}
     </>
   );
 }
