@@ -14,7 +14,7 @@ export default function CopyFormatSelector({ activeFormat, onChange }: CopyForma
         <button
           key={id}
           onClick={() => onChange(id)}
-          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-150
+          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
             ${
               id === activeFormat
                 ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"

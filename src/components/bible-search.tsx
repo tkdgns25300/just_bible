@@ -42,7 +42,7 @@ export default function BibleSearch() {
   }, []);
 
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
-  const { bible, isLoading } = useBible(translationCode);
+  const { bible, isLoading, error } = useBible(translationCode);
 
   function handleTranslationChange(code: string) {
     setTranslationCode(code);
@@ -70,10 +70,13 @@ export default function BibleSearch() {
   }, [debouncedQuery]);
 
   const hasResults = results.length > 0;
+  const hasQuery = debouncedQuery.trim().length > 0;
+  const isSearching = hasQuery && isLoading;
+  const isEmpty = hasQuery && !isLoading && results.length === 0 && !error;
 
   return (
     <main
-      className={`flex min-h-dvh flex-col items-center px-4 transition-all duration-300 ${
+      className={`flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
         hasResults ? "pt-12 pb-16" : "justify-center pb-32"
       }`}
     >
@@ -93,8 +96,30 @@ export default function BibleSearch() {
           <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
         </div>
       </div>
+      {error && (
+        <div className="mt-8 text-center text-sm text-red-500 dark:text-red-400">
+          {error}
+        </div>
+      )}
+      {isSearching && (
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <div className="h-4 w-48 rounded-md bg-gray-200 dark:bg-gray-700"
+            style={{ animation: "pulse 1.5s ease-in-out infinite" }} />
+          <div className="h-16 w-full max-w-2xl rounded-lg bg-gray-100 dark:bg-gray-800"
+            style={{ animation: "pulse 1.5s ease-in-out 0.1s infinite" }} />
+          <div className="h-16 w-full max-w-2xl rounded-lg bg-gray-100 dark:bg-gray-800"
+            style={{ animation: "pulse 1.5s ease-in-out 0.2s infinite" }} />
+        </div>
+      )}
+      {isEmpty && (
+        <div className="mt-8 text-center text-sm text-gray-400 dark:text-gray-500"
+          style={{ animation: "fadeIn 0.3s ease-out" }}>
+          검색 결과가 없습니다
+        </div>
+      )}
       {hasResults && (
-        <div className="mt-6 flex w-full justify-center">
+        <div className="mt-6 flex w-full justify-center"
+          style={{ animation: "fadeIn 0.3s ease-out" }}>
           <SearchResults
             results={results}
             keyword={keyword}

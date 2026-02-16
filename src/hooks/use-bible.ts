@@ -32,22 +32,31 @@ async function loadTranslation(code: string): Promise<BibleTranslation> {
 export function useBible(code: string = DEFAULT_TRANSLATION_CODE) {
   const [bible, setBible] = useState<BibleTranslation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setIsLoading(true);
+    setError(null);
 
-    loadTranslation(code).then((data) => {
-      if (!cancelled) {
-        setBible(data);
-        setIsLoading(false);
-      }
-    });
+    loadTranslation(code)
+      .then((data) => {
+        if (!cancelled) {
+          setBible(data);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError("성경 데이터를 불러오지 못했습니다.");
+          setIsLoading(false);
+        }
+      });
 
     return () => {
       cancelled = true;
     };
   }, [code]);
 
-  return { bible, isLoading };
+  return { bible, isLoading, error };
 }

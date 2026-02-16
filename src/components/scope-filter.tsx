@@ -23,7 +23,7 @@ export default function ScopeFilter({ scope, onChange }: ScopeFilterProps) {
         <button
           key={value}
           onClick={() => onChange(value)}
-          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-150
+          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
             ${
               scope === value
                 ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
@@ -39,7 +39,7 @@ export default function ScopeFilter({ scope, onChange }: ScopeFilterProps) {
           const val = e.target.value;
           onChange(val ? Number(val) : "all");
         }}
-        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-150
+        className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
           appearance-none pr-6
           ${
             isBookSelected

@@ -94,9 +94,13 @@ export default function SearchResults({
   }, [loadMore]);
 
   async function handleCopy(result: SearchResult) {
-    const text = formatCopyText(result, translationName, copyFormat);
-    await navigator.clipboard.writeText(text);
-    setToastMessage(`${result.bookName} ${result.chapter}:${result.verse} 복사됨`);
+    try {
+      const text = formatCopyText(result, translationName, copyFormat);
+      await navigator.clipboard.writeText(text);
+      setToastMessage(`${result.bookName} ${result.chapter}:${result.verse} 복사됨`);
+    } catch {
+      setToastMessage("복사에 실패했습니다");
+    }
   }
 
   if (results.length === 0) return null;
@@ -111,7 +115,7 @@ export default function SearchResults({
           {results.length}개 결과
         </p>
         <ul className="space-y-4">
-          {visibleResults.map((result) => (
+          {visibleResults.map((result, index) => (
             <li
               key={`${result.bookName}-${result.chapter}-${result.verse}`}
               onClick={() => setContextTarget(result)}
@@ -119,6 +123,10 @@ export default function SearchResults({
                 transition-colors duration-150
                 hover:bg-gray-50 active:bg-gray-100
                 dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+              style={index < 10 ? {
+                animation: "fadeInUp 0.3s ease-out both",
+                animationDelay: `${index * 0.03}s`,
+              } : undefined}
             >
               <div className="mb-1 flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
