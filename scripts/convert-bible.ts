@@ -128,11 +128,192 @@ function parseLine(line: string): ParsedLine | null {
     abbr: match[1],
     chapter: parseInt(match[2], 10),
     verse: parseInt(match[3], 10),
-    rawText: match[4],
+    rawText: match[4].trim(),
   };
 }
 
 // --- 표준새번역 annotation parsing ---
+
+/**
+ * Find the start index of the footnote block at the end of the line.
+ * Scans backward from the end, tracking parenthesis depth,
+ * to find the outermost opening paren that starts a footnote: (letter.
+ * Also handles chained blocks like: (c. ...) a. ...)
+ */
+function findFootnoteBlockStart(text: string): number {
+  // Look for all potential footnote block start positions: (letter.
+  // and also (letter + Korean char (dotless format)
+  const candidates: number[] = [];
+  const startPattern = /\(([a-m])(?:\.|\s|[가-힣])/g;
+  let m;
+  while ((m = startPattern.exec(text)) !== null) {
+    candidates.push(m.index);
+  }
+
+  if (candidates.length === 0) return -1;
+
+  // The footnote block is typically at the END of the line.
+  // Take the first candidate that, when we read from it to the end,
+  // results in a valid footnote block (all parens roughly balance or it ends the line).
+  // We prefer the leftmost candidate that's still "at the end" (i.e., after the main Bible text).
+
+  // Heuristic: use the first (leftmost) candidate.
+  // But verify it's not inside the Bible text by checking that from this point,
+  // there are no more non-footnote sentence patterns.
+  return candidates[0];
+}
+
+/**
+ * Parse the footnote content block into individual marker->content pairs.
+ * Handles:
+ *   (a. content)
+ *   (c. content) a. content)             — missing opening paren on 2nd
+ *   (a. content. b) extra)               — b) style separator
+ *   (b.히> 이쉬 c.히> 잇샤)             — multiple in one block
+ *   (a. 창2:7(70인역))                   — nested parens
+ *   (b. 떠돌아 다님 (12,14절을 볼 것))   — nested parens
+ *   (a레25:8-27절을 볼 것.)              — dotless format
+ */
+function parseFootnoteBlock(block: string): Map<string, string> {
+  const contents = new Map<string, string>();
+
+  // Strip outer parens and whitespace
+  let cleaned = block.trim();
+
+  // Find all content separators: "letter." or "letter)" patterns
+  // that act as content markers within the block
+  // Pattern: letter followed by dot OR letter followed by closing paren (as separator)
+  const separatorRegex = /(?:^|[\s()])([a-m])(?:\.|\))\s*/g;
+  const separators: { marker: string; endIdx: number; isDotStyle: boolean }[] =
+    [];
+  let sepMatch;
+
+  while ((sepMatch = separatorRegex.exec(cleaned)) !== null) {
+    const marker = sepMatch[1];
+    const isDotStyle = cleaned[sepMatch.index + sepMatch[0].length - 1 - (sepMatch[0].endsWith(" ") ? 1 : 0)] !== ")";
+    separators.push({
+      marker,
+      endIdx: sepMatch.index + sepMatch[0].length,
+      isDotStyle:
+        cleaned.charAt(
+          sepMatch.index + sepMatch[0].trimEnd().length - 1
+        ) === "." ||
+        (sepMatch.index + 1 < cleaned.length &&
+          cleaned.charAt(sepMatch.index + sepMatch[1] ? sepMatch.index + (cleaned[sepMatch.index] === "(" || cleaned[sepMatch.index] === " " || cleaned[sepMatch.index] === ")" ? 2 : 1) : sepMatch.index + 1) === "."),
+    });
+  }
+
+  // Simpler approach: scan for all "letter." and "letter)" patterns
+  // that appear to be footnote content markers
+  const allMarkers: { marker: string; contentStart: number }[] = [];
+  const simplePattern = /(?:[()\s]|^)([a-m])\.\s*/g;
+  let sm;
+  while ((sm = simplePattern.exec(cleaned)) !== null) {
+    allMarkers.push({
+      marker: sm[1],
+      contentStart: sm.index + sm[0].length,
+    });
+  }
+
+  // Handle dotless format at block start: (aKorean...) like (a레25:8-27절을 볼 것.)
+  const dotlessPattern = /\(([a-m])(?=[가-힣\d])/g;
+  let dm;
+  while ((dm = dotlessPattern.exec(cleaned)) !== null) {
+    // Only add if this marker wasn't already found by simplePattern
+    if (!allMarkers.some((m) => m.marker === dm![1])) {
+      allMarkers.push({
+        marker: dm[1],
+        contentStart: dm.index + 2, // skip ( and letter
+      });
+    }
+  }
+
+  // Also find "letter)" style separators inside the block (like "b) 나심은")
+  const parenPattern = /(?:[()\s.])([a-m])\)\s*/g;
+  let pm;
+  while ((pm = parenPattern.exec(cleaned)) !== null) {
+    allMarkers.push({
+      marker: pm[1],
+      contentStart: pm.index + pm[0].length,
+    });
+  }
+
+  // Sort by position
+  allMarkers.sort((a, b) => a.contentStart - b.contentStart);
+
+  // Extract content for each marker
+  for (let i = 0; i < allMarkers.length; i++) {
+    const start = allMarkers[i].contentStart;
+    const isLast = i + 1 >= allMarkers.length;
+    const end = isLast
+      ? cleaned.length
+      : findSeparatorStart(cleaned, allMarkers[i + 1].contentStart);
+
+    let content = cleaned.slice(start, end).trim();
+    // Clean trailing/leading parens
+    content = content.replace(/^\(+/, "");
+    // Only strip trailing parens that are unmatched
+    content = stripUnmatchedTrailingParens(content);
+    content = content.trim();
+
+    // Strip trailing period ONLY when followed by another marker
+    // (the period is a separator between footnote entries, not content)
+    // Preserve trailing period for the last marker (it's genuine content)
+    if (!isLast && content.endsWith(".")) {
+      content = content.slice(0, -1).trim();
+    }
+
+    if (content) {
+      contents.set(allMarkers[i].marker, content);
+    }
+  }
+
+  return contents;
+}
+
+/** Find where the separator marker starts (back up from content start) */
+function findSeparatorStart(text: string, contentStart: number): number {
+  // Back up past the marker pattern: space/paren + letter + ./） + spaces
+  let idx = contentStart - 1;
+  // Skip trailing spaces
+  while (idx > 0 && text[idx - 1] === " ") idx--;
+  // Skip the . or )
+  if (idx > 0 && (text[idx - 1] === "." || text[idx - 1] === ")")) idx--;
+  // Skip the letter
+  if (idx > 0 && /[a-m]/.test(text[idx - 1])) idx--;
+  // Skip leading space/paren
+  if (idx > 0 && /[\s()]/.test(text[idx - 1])) idx--;
+
+  return Math.max(0, idx);
+}
+
+/** Strip trailing closing parens that don't have matching opening parens */
+function stripUnmatchedTrailingParens(text: string): string {
+  let result = text;
+  while (result.endsWith(")")) {
+    const open = (result.match(/\(/g) || []).length;
+    const close = (result.match(/\)/g) || []).length;
+    if (close > open) {
+      result = result.slice(0, -1).trim();
+    } else {
+      break;
+    }
+  }
+  return result;
+}
+
+/**
+ * Extract the first word after a footnote marker, skipping leading quotes.
+ * e.g., from `"우리 들로...` extracts `우리`
+ * e.g., from `"보시는 하나님"...` extracts `보시는`
+ * e.g., from `태초에...` extracts `태초에`
+ */
+function extractWordAfterMarker(textAfterMarker: string): string {
+  // Skip leading quotation marks (various styles)
+  const stripped = textAfterMarker.replace(/^[""''「」『』《》\u201C\u201D\u2018\u2019"']+\s*/, "");
+  const wordMatch = stripped.match(/^([^\s,."''""!?;:)]+)/);
+  return wordMatch ? wordMatch[1] : "";
+}
 
 function parseNkrvVerse(rawText: string): {
   text: string;
@@ -142,10 +323,8 @@ function parseNkrvVerse(rawText: string): {
   let text = rawText;
   let heading: string | undefined;
   const footnotes: Footnote[] = [];
-  const footnoteContents = new Map<string, string>();
 
-  // Step 1: Extract ALL headings (can be multiple: <사무엘의 죽음> ... <다윗과 아비가일>)
-  // Headings appear at start or mid-text inside < >
+  // Step 1: Extract ALL headings
   const headings: string[] = [];
   text = text.replace(/<([^>]+)>/g, (_match, h) => {
     headings.push(h);
@@ -155,106 +334,37 @@ function parseNkrvVerse(rawText: string): {
     heading = headings[headings.length - 1];
   }
 
-  // Step 2: Extract footnote content from the END of the line
-  // The footnote block is typically a parenthesized section at the end
-  // Patterns:
-  //   (a. content)
-  //   (a. content. b) extra)          — mixed marker inside parens
-  //   (c. content) a. content)        — broken: second has no opening paren
-  //   (a. 창2:7(70인역))              — nested parens in content
+  // Step 2: Extract footnote content block from the end
+  const blockStart = findFootnoteBlockStart(text);
+  let footnoteContents = new Map<string, string>();
 
-  // Strategy: find the footnote block at the end of the line
-  // Footnote blocks start with (letter. or (letter + reference like (a레25:8...)
-  // We search for the FIRST opening paren that starts a footnote
-  const footnoteBlockRegex =
-    /\s*\(([a-m])\.[\s\S]*$/;
-  const blockMatch = text.match(footnoteBlockRegex);
-
-  // Also handle dotless format: (a레25:8-27절을 볼 것.)
-  if (!blockMatch) {
-    const dotlessRegex = /\s*\(([a-m])([가-힣])[\s\S]*\)\s*$/;
-    const dotlessMatch = text.match(dotlessRegex);
-    if (dotlessMatch && dotlessMatch.index !== undefined) {
-      const marker = dotlessMatch[1];
-      let content = text.slice(dotlessMatch.index).trim();
-      text = text.slice(0, dotlessMatch.index).trim();
-      // Clean parens and extract content after the marker letter
-      content = content.replace(/^\(/, "").replace(/\)$/, "").trim();
-      content = content.slice(1); // remove the marker letter
-      footnoteContents.set(marker, content.trim());
-    }
+  if (blockStart >= 0) {
+    const footnoteBlock = text.slice(blockStart);
+    text = text.slice(0, blockStart).trim();
+    footnoteContents = parseFootnoteBlock(footnoteBlock);
   }
 
-  if (blockMatch && blockMatch.index !== undefined) {
-    const footnoteBlock = text.slice(blockMatch.index).trim();
-    text = text.slice(0, blockMatch.index).trim();
-
-    // Parse individual footnote entries from the block
-    // The block may look like:
-    //   (a. 또는 태초에...)
-    //   (c. 히> 아다마) a. 히> 아담)
-    //   (a. 또는 메시아. b) 나심은)
-    //   (b.히> 이쉬 c.히> 잇샤)
-    //   (a. 창2:7(70인역))
-
-    // Split by footnote marker pattern: letter followed by dot
-    const segmentRegex = /([a-m])\.\s*/g;
-    const segments: { marker: string; startIdx: number }[] = [];
-    let segMatch;
-
-    while ((segMatch = segmentRegex.exec(footnoteBlock)) !== null) {
-      segments.push({
-        marker: segMatch[1],
-        startIdx: segMatch.index + segMatch[0].length,
-      });
-    }
-
-    for (let i = 0; i < segments.length; i++) {
-      const start = segments[i].startIdx;
-      const end =
-        i + 1 < segments.length ? segments[i + 1].startIdx - segments[i + 1].marker.length - 2 : footnoteBlock.length;
-      let content = footnoteBlock.slice(start, end).trim();
-
-      // Clean up trailing/leading parens and whitespace
-      content = content.replace(/^\(+/, "").replace(/\)+$/, "").trim();
-      // Remove trailing periods
-      content = content.replace(/\.\s*$/, "").trim();
-
-      if (content) {
-        footnoteContents.set(segments[i].marker, content);
-      }
-    }
-  }
-
-  // Step 3: Extract footnote markers and their target words from the body text
-  // Pattern: "a) word" where marker is right before the word
-  // Also handle markers inside headings that we already extracted
-
-  // First, handle markers in headings (e.g., <지휘자를 따라 a) 팔현금에 맞추어...>)
+  // Step 3: Extract markers from heading
   if (heading) {
-    const cleanedHeading = heading.replace(/\s*[a-m]\)\s*/g, " ").replace(/\s{2,}/g, " ").trim();
-    // Extract markers from heading
     const headingMarkerRegex = /([a-m])\)\s*/g;
     let hMatch;
     while ((hMatch = headingMarkerRegex.exec(heading)) !== null) {
       const marker = hMatch[1];
       const afterIdx = hMatch.index + hMatch[0].length;
       const afterText = heading.slice(afterIdx);
-      const wordMatch = afterText.match(/^([^\s,."'!?;:)]+)/);
-      const word = wordMatch ? wordMatch[1] : "";
+      const word = extractWordAfterMarker(afterText);
       const content = footnoteContents.get(marker) || "";
 
       if (word && content) {
         footnotes.push({ marker, word, content });
       }
     }
-    heading = cleanedHeading;
+    heading = heading.replace(/\s*[a-m]\)\s*/g, " ").replace(/\s{2,}/g, " ").trim();
   }
 
-  // Now extract markers from body text
+  // Step 4: Extract markers from body text
   const bodyMarkerRegex = /([a-m])\)\s*/g;
   let bMatch;
-  // Collect all markers first to avoid index issues during replacement
   const bodyMarkers: { marker: string; fullMatch: string; index: number }[] =
     [];
   while ((bMatch = bodyMarkerRegex.exec(text)) !== null) {
@@ -267,8 +377,7 @@ function parseNkrvVerse(rawText: string): {
 
   for (const { marker, fullMatch, index } of bodyMarkers) {
     const afterMarker = text.slice(index + fullMatch.length);
-    const wordMatch = afterMarker.match(/^([^\s,."'!?;:)]+)/);
-    const word = wordMatch ? wordMatch[1] : "";
+    const word = extractWordAfterMarker(afterMarker);
     const content = footnoteContents.get(marker) || "";
 
     if (word && content) {
