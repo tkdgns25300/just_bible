@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RESULTS_PER_PAGE } from "@/constants/search";
+import { RESULTS_PER_PAGE, type CopyFormatId } from "@/constants/search";
+import { formatCopyText } from "@/lib/copy-format";
 import type { SearchResult } from "@/lib/search";
 import Toast from "@/components/toast";
 
@@ -9,10 +10,25 @@ interface SearchResultsProps {
   results: SearchResult[];
   keyword?: string;
   translationName: string;
+  copyFormat: CopyFormatId;
 }
 
-function formatCopyText(result: SearchResult, translationName: string): string {
-  return `"${result.text}" (${result.bookName} ${result.chapter}:${result.verse}, ${translationName})`;
+function CopyIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-4 w-4"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
 }
 
 function HighlightedText({ text, keyword }: { text: string; keyword?: string }) {
@@ -37,7 +53,12 @@ function HighlightedText({ text, keyword }: { text: string; keyword?: string }) 
   );
 }
 
-export default function SearchResults({ results, keyword, translationName }: SearchResultsProps) {
+export default function SearchResults({
+  results,
+  keyword,
+  translationName,
+  copyFormat,
+}: SearchResultsProps) {
   const [visibleCount, setVisibleCount] = useState(RESULTS_PER_PAGE);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const observerRef = useRef<HTMLDivElement>(null);
@@ -66,7 +87,7 @@ export default function SearchResults({ results, keyword, translationName }: Sea
   }, [loadMore]);
 
   async function handleCopy(result: SearchResult) {
-    const text = formatCopyText(result, translationName);
+    const text = formatCopyText(result, translationName, copyFormat);
     await navigator.clipboard.writeText(text);
     setToastMessage(`${result.bookName} ${result.chapter}:${result.verse} 복사됨`);
   }
@@ -87,14 +108,22 @@ export default function SearchResults({ results, keyword, translationName }: Sea
             <li
               key={`${result.bookName}-${result.chapter}-${result.verse}`}
               onClick={() => handleCopy(result)}
-              className="cursor-pointer rounded-lg border border-gray-200 px-4 py-3
+              className="group cursor-pointer rounded-lg border border-gray-200 px-4 py-3
                 transition-colors duration-150
                 hover:bg-gray-50 active:bg-gray-100
                 dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700"
             >
-              <p className="mb-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                {result.bookName} {result.chapter}:{result.verse}
-              </p>
+              <div className="mb-1 flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  {result.bookName} {result.chapter}:{result.verse}
+                </p>
+                <span
+                  className="text-gray-400 opacity-0 transition-opacity duration-150
+                    group-hover:opacity-100 dark:text-gray-500"
+                >
+                  <CopyIcon />
+                </span>
+              </div>
               <p className="text-base leading-relaxed">
                 <HighlightedText text={result.text} keyword={keyword} />
               </p>

@@ -2,9 +2,12 @@
 
 import { useMemo, useState } from "react";
 import {
+  DEFAULT_COPY_FORMAT,
   DEFAULT_TRANSLATION_CODE,
   SEARCH_DEBOUNCE_MS,
+  STORAGE_KEY_COPY_FORMAT,
   STORAGE_KEY_TRANSLATION,
+  type CopyFormatId,
 } from "@/constants/search";
 import { useBible } from "@/hooks/use-bible";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -12,21 +15,32 @@ import { parseQuery, searchBible } from "@/lib/search";
 import SearchBar from "@/components/search-bar";
 import SearchResults from "@/components/search-results";
 import TranslationTabs from "@/components/translation-tabs";
+import CopyFormatSelector from "@/components/copy-format-selector";
 
-function getInitialTranslation(): string {
-  if (typeof window === "undefined") return DEFAULT_TRANSLATION_CODE;
-  return localStorage.getItem(STORAGE_KEY_TRANSLATION) ?? DEFAULT_TRANSLATION_CODE;
+function getStored(key: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  return localStorage.getItem(key) ?? fallback;
 }
 
 export default function BibleSearch() {
   const [query, setQuery] = useState("");
-  const [translationCode, setTranslationCode] = useState(getInitialTranslation);
+  const [translationCode, setTranslationCode] = useState(() =>
+    getStored(STORAGE_KEY_TRANSLATION, DEFAULT_TRANSLATION_CODE),
+  );
+  const [copyFormat, setCopyFormat] = useState<CopyFormatId>(() =>
+    getStored(STORAGE_KEY_COPY_FORMAT, DEFAULT_COPY_FORMAT) as CopyFormatId,
+  );
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
   const { bible, isLoading } = useBible(translationCode);
 
   function handleTranslationChange(code: string) {
     setTranslationCode(code);
     localStorage.setItem(STORAGE_KEY_TRANSLATION, code);
+  }
+
+  function handleCopyFormatChange(format: CopyFormatId) {
+    setCopyFormat(format);
+    localStorage.setItem(STORAGE_KEY_COPY_FORMAT, format);
   }
 
   const results = useMemo(() => {
@@ -55,13 +69,17 @@ export default function BibleSearch() {
         Just Bible
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
-      <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
+      <div className="mt-4 flex flex-col items-center gap-2">
+        <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
+        <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
+      </div>
       {hasResults && (
         <div className="mt-6 flex w-full justify-center">
           <SearchResults
             results={results}
             keyword={keyword}
             translationName={bible?.translation ?? ""}
+            copyFormat={copyFormat}
           />
         </div>
       )}
