@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_COPY_FORMAT,
   DEFAULT_TRANSLATION_CODE,
@@ -17,19 +17,18 @@ import SearchResults from "@/components/search-results";
 import TranslationTabs from "@/components/translation-tabs";
 import CopyFormatSelector from "@/components/copy-format-selector";
 
-function getStored(key: string, fallback: string): string {
-  if (typeof window === "undefined") return fallback;
-  return localStorage.getItem(key) ?? fallback;
-}
-
 export default function BibleSearch() {
   const [query, setQuery] = useState("");
-  const [translationCode, setTranslationCode] = useState(() =>
-    getStored(STORAGE_KEY_TRANSLATION, DEFAULT_TRANSLATION_CODE),
-  );
-  const [copyFormat, setCopyFormat] = useState<CopyFormatId>(() =>
-    getStored(STORAGE_KEY_COPY_FORMAT, DEFAULT_COPY_FORMAT) as CopyFormatId,
-  );
+  const [translationCode, setTranslationCode] = useState(DEFAULT_TRANSLATION_CODE);
+  const [copyFormat, setCopyFormat] = useState<CopyFormatId>(DEFAULT_COPY_FORMAT);
+
+  useEffect(() => {
+    const savedTranslation = localStorage.getItem(STORAGE_KEY_TRANSLATION);
+    if (savedTranslation) setTranslationCode(savedTranslation);
+
+    const savedFormat = localStorage.getItem(STORAGE_KEY_COPY_FORMAT);
+    if (savedFormat) setCopyFormat(savedFormat as CopyFormatId);
+  }, []);
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
   const { bible, isLoading } = useBible(translationCode);
 
