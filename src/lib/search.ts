@@ -30,7 +30,7 @@ function resolveBook(input: string): number | null {
   return nameToId.get(input) ?? abbrToId.get(input) ?? chosungToId.get(input) ?? null;
 }
 
-function parseQuery(query: string): ParsedQuery {
+export function parseQuery(query: string): ParsedQuery {
   const trimmed = query.trim();
   if (!trimmed) return { mode: "keyword", keyword: "" };
 
