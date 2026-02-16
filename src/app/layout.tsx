@@ -23,13 +23,18 @@ export const metadata: Metadata = {
   description: "성경 본문을 빠르게 검색하고 복사할 수 있는 웹 애플리케이션",
 };
 
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("just-bible-theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

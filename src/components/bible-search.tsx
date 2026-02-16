@@ -22,6 +22,7 @@ import TranslationTabs from "@/components/translation-tabs";
 import CopyFormatSelector from "@/components/copy-format-selector";
 import FontSizeControl from "@/components/font-size-control";
 import ScopeFilter from "@/components/scope-filter";
+import ThemeToggle from "@/components/theme-toggle";
 
 export default function BibleSearch() {
   const [query, setQuery] = useState("");
@@ -76,10 +77,13 @@ export default function BibleSearch() {
 
   return (
     <main
-      className={`flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
+      className={`relative flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
         hasResults ? "pt-12 pb-16" : "justify-center pb-32"
       }`}
     >
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <h1
         className={`font-bold tracking-tight transition-all duration-300 ${
           hasResults ? "mb-4 text-2xl sm:text-3xl" : "mb-8 text-4xl sm:text-5xl"
