@@ -4,11 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_COPY_FORMAT,
   DEFAULT_FONT_SIZE,
+  DEFAULT_FONT_WEIGHT,
   DEFAULT_TRANSLATION_CODE,
   FONT_SIZES,
+  FONT_WEIGHTS,
   SEARCH_DEBOUNCE_MS,
   STORAGE_KEY_COPY_FORMAT,
   STORAGE_KEY_FONT_SIZE,
+  STORAGE_KEY_FONT_WEIGHT,
   STORAGE_KEY_TRANSLATION,
   type CopyFormatId,
   type SearchScope,
@@ -21,6 +24,7 @@ import SearchResults from "@/components/search-results";
 import TranslationTabs from "@/components/translation-tabs";
 import CopyFormatSelector from "@/components/copy-format-selector";
 import FontSizeControl from "@/components/font-size-control";
+import FontWeightControl from "@/components/font-weight-control";
 import ScopeFilter from "@/components/scope-filter";
 import ThemeToggle from "@/components/theme-toggle";
 
@@ -29,6 +33,7 @@ export default function BibleSearch() {
   const [translationCode, setTranslationCode] = useState(DEFAULT_TRANSLATION_CODE);
   const [copyFormat, setCopyFormat] = useState<CopyFormatId>(DEFAULT_COPY_FORMAT);
   const [fontSizeIndex, setFontSizeIndex] = useState(DEFAULT_FONT_SIZE);
+  const [fontWeightIndex, setFontWeightIndex] = useState(DEFAULT_FONT_WEIGHT);
   const [scope, setScope] = useState<SearchScope>("all");
 
   useEffect(() => {
@@ -40,6 +45,9 @@ export default function BibleSearch() {
 
     const savedFontSize = localStorage.getItem(STORAGE_KEY_FONT_SIZE);
     if (savedFontSize) setFontSizeIndex(Number(savedFontSize));
+
+    const savedFontWeight = localStorage.getItem(STORAGE_KEY_FONT_WEIGHT);
+    if (savedFontWeight) setFontWeightIndex(Number(savedFontWeight));
   }, []);
 
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
@@ -58,6 +66,11 @@ export default function BibleSearch() {
   function handleFontSizeChange(index: number) {
     setFontSizeIndex(index);
     localStorage.setItem(STORAGE_KEY_FONT_SIZE, String(index));
+  }
+
+  function handleFontWeightChange(index: number) {
+    setFontWeightIndex(index);
+    localStorage.setItem(STORAGE_KEY_FONT_WEIGHT, String(index));
   }
 
   const results = useMemo(() => {
@@ -109,6 +122,10 @@ export default function BibleSearch() {
           <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자크기</span>
           <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
         </div>
+        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자두께</span>
+          <FontWeightControl weightIndex={fontWeightIndex} onChange={handleFontWeightChange} />
+        </div>
       </div>
       {error && (
         <div className="mt-8 text-center text-sm text-red-500 dark:text-red-400">
@@ -139,7 +156,7 @@ export default function BibleSearch() {
             keyword={keyword}
             translationName={bible?.translation ?? ""}
             copyFormat={copyFormat}
-            fontSizeClass={FONT_SIZES[fontSizeIndex].class}
+            fontSizeClass={`${FONT_SIZES[fontSizeIndex].class} ${FONT_WEIGHTS[fontWeightIndex].class}`}
             bible={bible}
           />
         </div>

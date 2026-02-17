@@ -32,6 +32,15 @@ export const FONT_SIZES = [
   { label: "최대", class: "text-2xl leading-relaxed" },
 ] as const;
 
+export const STORAGE_KEY_FONT_WEIGHT = "just-bible-font-weight";
+export const DEFAULT_FONT_WEIGHT = 1;
+export const FONT_WEIGHTS = [
+  { label: "가늘게", class: "font-light" },
+  { label: "보통", class: "font-normal" },
+  { label: "굵게", class: "font-semibold" },
+  { label: "두껍게", class: "font-bold" },
+] as const;
+
 export type SearchScope = "all" | "old" | "new" | number;
 
 export const STORAGE_KEY_THEME = "just-bible-theme";
