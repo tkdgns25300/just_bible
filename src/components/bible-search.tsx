@@ -92,17 +92,11 @@ export default function BibleSearch() {
         Just Bible
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
-      <div className="mt-4 flex flex-col items-center gap-2">
-        <div className="flex items-center gap-1.5">
-          <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
-          <div className="mx-1 h-4 w-px bg-gray-300 dark:bg-gray-600" />
-          <ScopeFilter scope={scope} onChange={setScope} />
-        </div>
-        <div className="flex items-center gap-1.5">
-          <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
-          <div className="mx-1 h-4 w-px bg-gray-300 dark:bg-gray-600" />
-          <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
-        </div>
+      <div className="mt-5 flex flex-col items-center gap-3">
+        <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
+        <ScopeFilter scope={scope} onChange={setScope} />
+        <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
+        <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
       </div>
       {error && (
         <div className="mt-8 text-center text-sm text-red-500 dark:text-red-400">
