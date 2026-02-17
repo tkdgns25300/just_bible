@@ -9,7 +9,7 @@ interface CopyFormatSelectorProps {
 
 export default function CopyFormatSelector({ activeFormat, onChange }: CopyFormatSelectorProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1.5">
       {COPY_FORMATS.map(({ id, name }) => (
         <button
           key={id}

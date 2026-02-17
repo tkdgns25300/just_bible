@@ -9,12 +9,12 @@ interface TranslationTabsProps {
 
 export default function TranslationTabs({ activeCode, onChange }: TranslationTabsProps) {
   return (
-    <div className="mt-4 flex gap-2">
+    <div className="flex gap-1.5">
       {TRANSLATIONS.map(({ code, name }) => (
         <button
           key={code}
           onClick={() => onChange(code)}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors duration-150
+          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
             ${
               code === activeCode
                 ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"

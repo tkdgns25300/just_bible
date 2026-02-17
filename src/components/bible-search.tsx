@@ -93,10 +93,14 @@ export default function BibleSearch() {
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
       <div className="mt-4 flex flex-col items-center gap-2">
-        <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
-        <ScopeFilter scope={scope} onChange={setScope} />
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
+          <div className="mx-1 h-4 w-px bg-gray-300 dark:bg-gray-600" />
+          <ScopeFilter scope={scope} onChange={setScope} />
+        </div>
+        <div className="flex items-center gap-1.5">
           <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
+          <div className="mx-1 h-4 w-px bg-gray-300 dark:bg-gray-600" />
           <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
         </div>
       </div>
