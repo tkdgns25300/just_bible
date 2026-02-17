@@ -12,11 +12,11 @@ export default function FontSizeControl({ sizeIndex, onChange }: FontSizeControl
   const isMax = sizeIndex === FONT_SIZES.length - 1;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-2">
       <button
         onClick={() => onChange(sizeIndex - 1)}
         disabled={isMin}
-        className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150
+        className="rounded-md px-2.5 py-1.5 text-base font-medium transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300
           dark:enabled:hover:bg-gray-700 dark:enabled:active:bg-gray-600
@@ -24,13 +24,13 @@ export default function FontSizeControl({ sizeIndex, onChange }: FontSizeControl
       >
         A-
       </button>
-      <span className="w-10 text-center text-xs text-gray-500 dark:text-gray-400">
+      <span className="w-10 text-center text-sm text-gray-500 dark:text-gray-400">
         {FONT_SIZES[sizeIndex].label}
       </span>
       <button
         onClick={() => onChange(sizeIndex + 1)}
         disabled={isMax}
-        className="rounded-md px-2 py-1 text-sm font-medium transition-colors duration-150
+        className="rounded-md px-2.5 py-1.5 text-base font-medium transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300
           dark:enabled:hover:bg-gray-700 dark:enabled:active:bg-gray-600

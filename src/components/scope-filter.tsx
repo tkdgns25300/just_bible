@@ -18,12 +18,12 @@ export default function ScopeFilter({ scope, onChange }: ScopeFilterProps) {
   const isBookSelected = typeof scope === "number";
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-2">
       {SCOPE_OPTIONS.map(({ value, label }) => (
         <button
           key={value}
           onClick={() => onChange(value)}
-          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
             ${
               scope === value
                 ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
@@ -39,8 +39,8 @@ export default function ScopeFilter({ scope, onChange }: ScopeFilterProps) {
           const val = e.target.value;
           onChange(val ? Number(val) : "all");
         }}
-        className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
-          appearance-none pr-6
+        className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
+          appearance-none pr-7
           ${
             isBookSelected
               ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"

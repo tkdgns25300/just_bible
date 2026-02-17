@@ -85,28 +85,28 @@ export default function BibleSearch() {
         <ThemeToggle />
       </div>
       <h1
-        className={`font-bold tracking-tight transition-all duration-300 ${
-          hasResults ? "mb-4 text-2xl sm:text-3xl" : "mb-8 text-4xl sm:text-5xl"
+        className={`font-[family-name:var(--font-title)] tracking-tight transition-all duration-300 ${
+          hasResults ? "mb-6 text-5xl sm:text-6xl" : "mb-10 text-7xl sm:text-8xl"
         }`}
       >
         Just Bible
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
-      <div className="mt-5 flex flex-col gap-3">
-        <div className="flex items-center gap-2.5">
-          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">역본</span>
+      <div className="mt-6 flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">역본</span>
           <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
         </div>
-        <div className="flex items-center gap-2.5">
-          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">범위</span>
+        <div className="flex items-center gap-3">
+          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">범위</span>
           <ScopeFilter scope={scope} onChange={setScope} />
         </div>
-        <div className="flex items-center gap-2.5">
-          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">복사형식</span>
+        <div className="flex items-center gap-3">
+          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">복사형식</span>
           <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
         </div>
-        <div className="flex items-center gap-2.5">
-          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">글자크기</span>
+        <div className="flex items-center gap-3">
+          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">글자크기</span>
           <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
         </div>
       </div>

@@ -9,12 +9,12 @@ interface CopyFormatSelectorProps {
 
 export default function CopyFormatSelector({ activeFormat, onChange }: CopyFormatSelectorProps) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap gap-2">
       {COPY_FORMATS.map(({ id, name, example }) => (
         <div key={id} className="group relative">
           <button
             onClick={() => onChange(id)}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
               ${
                 id === activeFormat
                   ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
