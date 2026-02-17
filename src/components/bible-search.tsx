@@ -92,11 +92,23 @@ export default function BibleSearch() {
         Just Bible
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
-      <div className="mt-5 flex flex-col items-center gap-3">
-        <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
-        <ScopeFilter scope={scope} onChange={setScope} />
-        <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
-        <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
+      <div className="mt-5 flex flex-col gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">역본</span>
+          <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
+        </div>
+        <div className="flex items-center gap-2.5">
+          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">범위</span>
+          <ScopeFilter scope={scope} onChange={setScope} />
+        </div>
+        <div className="flex items-center gap-2.5">
+          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">복사형식</span>
+          <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
+        </div>
+        <div className="flex items-center gap-2.5">
+          <span className="w-14 shrink-0 text-right text-xs text-gray-400 dark:text-gray-500">글자크기</span>
+          <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
+        </div>
       </div>
       {error && (
         <div className="mt-8 text-center text-sm text-red-500 dark:text-red-400">
