@@ -35,6 +35,7 @@ export default function BibleSearch() {
   const [fontSizeIndex, setFontSizeIndex] = useState(DEFAULT_FONT_SIZE);
   const [fontWeightIndex, setFontWeightIndex] = useState(DEFAULT_FONT_WEIGHT);
   const [scope, setScope] = useState<SearchScope>("all");
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const savedTranslation = localStorage.getItem(STORAGE_KEY_TRANSLATION);
@@ -114,18 +115,33 @@ export default function BibleSearch() {
           <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">범위</span>
           <ScopeFilter scope={scope} onChange={setScope} />
         </div>
-        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">복사형식</span>
-          <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
-        </div>
-        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자크기</span>
-          <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
-        </div>
-        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자두께</span>
-          <FontWeightControl weightIndex={fontWeightIndex} onChange={handleFontWeightChange} />
-        </div>
+        <button
+          onClick={() => setShowMore((prev) => !prev)}
+          className="flex items-center gap-1 self-center text-xs text-gray-400 transition-colors
+            hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+        >
+          {showMore ? "설정 닫기" : "설정 더보기"}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+            className={`h-3.5 w-3.5 transition-transform duration-200 ${showMore ? "rotate-180" : ""}`}>
+            <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+          </svg>
+        </button>
+        {showMore && (
+          <div className="flex flex-col gap-4" style={{ animation: "fadeIn 0.2s ease-out" }}>
+            <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">복사형식</span>
+              <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
+            </div>
+            <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자크기</span>
+              <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
+            </div>
+            <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자두께</span>
+              <FontWeightControl weightIndex={fontWeightIndex} onChange={handleFontWeightChange} />
+            </div>
+          </div>
+        )}
       </div>
       {error && (
         <div className="mt-8 text-center text-sm text-red-500 dark:text-red-400">
