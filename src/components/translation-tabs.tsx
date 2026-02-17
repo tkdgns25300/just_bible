@@ -14,7 +14,8 @@ export default function TranslationTabs({ activeCode, onChange }: TranslationTab
         <button
           key={code}
           onClick={() => onChange(code)}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
+          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-150
+            sm:px-4 sm:py-2 sm:text-sm
             ${
               code === activeCode
                 ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"

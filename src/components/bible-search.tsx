@@ -93,20 +93,20 @@ export default function BibleSearch() {
       </h1>
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
       <div className="mt-6 flex flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">역본</span>
+        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">역본</span>
           <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
         </div>
-        <div className="flex items-center gap-3">
-          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">범위</span>
+        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">범위</span>
           <ScopeFilter scope={scope} onChange={setScope} />
         </div>
-        <div className="flex items-center gap-3">
-          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">복사형식</span>
+        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">복사형식</span>
           <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
         </div>
-        <div className="flex items-center gap-3">
-          <span className="w-16 shrink-0 text-right text-sm text-gray-400 dark:text-gray-500">글자크기</span>
+        <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자크기</span>
           <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
         </div>
       </div>

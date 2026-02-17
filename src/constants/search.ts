@@ -16,7 +16,7 @@ export const DEFAULT_COPY_FORMAT = "default";
 export const COPY_FORMATS = [
   { id: "default", name: "기본형", example: '"본문" (창세기 1:1, 개역개정)' },
   { id: "compact", name: "간결형", example: "본문 (창1:1)" },
-  { id: "newline", name: "줄바꿈형", example: "본문\\n- 창세기 1:1 (개역개정)" },
+  { id: "newline", name: "줄바꿈형", example: "본문\n- 창세기 1:1 (개역개정)" },
   { id: "plain", name: "순수 본문", example: "본문" },
 ] as const;
 
