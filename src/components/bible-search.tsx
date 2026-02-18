@@ -100,7 +100,7 @@ export default function BibleSearch() {
       </div>
       <h1
         className={`font-[family-name:var(--font-title)] tracking-tight transition-all duration-300 ${
-          hasResults ? "mb-6 cursor-pointer text-6xl sm:text-7xl" : "mb-3 text-8xl sm:text-9xl"
+          hasResults ? "mb-6 cursor-pointer text-7xl sm:text-8xl" : "mb-1 text-[7rem] sm:text-[9rem]"
         }`}
         style={{ WebkitTextStroke: "1.5px currentColor" }}
         onClick={hasResults ? () => setQuery("") : undefined}
@@ -108,18 +108,18 @@ export default function BibleSearch() {
         Just Bible
       </h1>
       {!hasResults && (
-        <p className="mb-10 text-base text-gray-400 sm:text-lg dark:text-gray-500">
+        <p className="mb-10 text-lg text-gray-400 sm:text-xl dark:text-gray-500">
           당신의 일상에 가장 가까운 성경 사전
         </p>
       )}
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
       <div className="mt-6 flex flex-col gap-4">
         <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">역본</span>
+          <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">역본</span>
           <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
         </div>
         <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-          <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">범위</span>
+          <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">범위</span>
           <ScopeFilter scope={scope} onChange={setScope} />
         </div>
         <button
@@ -136,15 +136,15 @@ export default function BibleSearch() {
         {showMore && (
           <div className="flex flex-col gap-4" style={{ animation: "fadeIn 0.2s ease-out" }}>
             <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">복사형식</span>
+              <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">복사형식</span>
               <CopyFormatSelector activeFormat={copyFormat} onChange={handleCopyFormatChange} />
             </div>
             <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자크기</span>
+              <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">글자크기</span>
               <FontSizeControl sizeIndex={fontSizeIndex} onChange={handleFontSizeChange} />
             </div>
             <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <span className="shrink-0 text-xs text-gray-400 sm:w-16 sm:text-right sm:text-sm dark:text-gray-500">글자두께</span>
+              <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">글자두께</span>
               <FontWeightControl weightIndex={fontWeightIndex} onChange={handleFontWeightChange} />
             </div>
           </div>
@@ -152,40 +152,40 @@ export default function BibleSearch() {
       </div>
       {!hasQuery && !error && (
         <div className="mt-10 w-full max-w-2xl" style={{ animation: "fadeIn 0.4s ease-out" }}>
-          <div className="rounded-2xl border border-amber-200/60 bg-gradient-to-b from-amber-50/80 to-orange-50/30
+          <div className="rounded-2xl border border-pink-200/70 bg-gradient-to-b from-pink-50 to-rose-50/60
             p-5 shadow-sm sm:p-7
-            dark:border-amber-900/40 dark:from-amber-950/20 dark:to-orange-950/10">
-            <p className="mb-1 text-center text-lg font-semibold text-amber-900 dark:text-amber-200">
+            dark:border-pink-900/40 dark:from-pink-950/25 dark:to-rose-950/15">
+            <p className="mb-1 text-center text-lg font-semibold text-pink-900 dark:text-pink-200">
               말씀을 검색하세요
             </p>
-            <p className="mb-6 text-center text-xs text-amber-700/70 dark:text-amber-400/60">
+            <p className="mb-6 text-center text-xs text-pink-700/70 dark:text-pink-300/60">
               구절 주소 또는 키워드로 빠르게 찾고, 바로 복사할 수 있습니다
             </p>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {[
-                { icon: "📖", title: "주소로 찾기", desc: "정확한 장절로 바로 이동하세요", examples: ["창 1:1", "요 3:16"] },
-                { icon: "📏", title: "범위로 읽기", desc: "연속된 구절을 한 번에 읽으세요", examples: ["시 23:1-6", "마 5:1-12"] },
-                { icon: "⌨️", title: "초성 · 약어 검색", desc: "빠르고 간편하게 검색하세요", examples: ["ㅊㅅㄱ", "로마서 8"] },
-                { icon: "🔍", title: "키워드 찾기", desc: "주제별 말씀을 발견하세요", examples: ["사랑", "위로", "소망"] },
+                { icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-4.5 w-4.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>, title: "주소로 찾기", desc: "정확한 장절로 바로 이동하세요", examples: ["창 1:1", "요 3:16"] },
+                { icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-4.5 w-4.5"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>, title: "범위로 읽기", desc: "연속된 구절을 한 번에 읽으세요", examples: ["시 23:1-6", "마 5:1-12"] },
+                { icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-4.5 w-4.5"><path d="M7 7h10" /><path d="M7 12h4" /><rect x="3" y="3" width="18" height="18" rx="2" /></svg>, title: "초성 · 약어 검색", desc: "빠르고 간편하게 검색하세요", examples: ["ㅊㅅㄱ", "로마서 8"] },
+                { icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-4.5 w-4.5"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>, title: "키워드 찾기", desc: "주제별 말씀을 발견하세요", examples: ["사랑", "위로", "소망"] },
               ].map(({ icon, title, desc, examples }) => (
                 <div key={title}
-                  className="rounded-xl border border-amber-100 bg-white/70 px-4 py-4
-                    dark:border-amber-900/30 dark:bg-amber-950/20"
+                  className="rounded-xl border border-pink-200/80 bg-white/80 px-4 py-4
+                    dark:border-pink-800/30 dark:bg-pink-950/20"
                 >
                   <div className="mb-1 flex items-center gap-2">
-                    <span className="text-lg">{icon}</span>
-                    <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">{title}</p>
+                    <span className="text-pink-400 dark:text-pink-400">{icon}</span>
+                    <p className="text-sm font-semibold text-pink-900 dark:text-pink-200">{title}</p>
                   </div>
-                  <p className="mb-3 text-xs text-amber-700/60 dark:text-amber-400/50">{desc}</p>
+                  <p className="mb-3 text-xs text-pink-600/60 dark:text-pink-400/50">{desc}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {examples.map((q) => (
                       <button
                         key={q}
                         onClick={() => setQuery(q)}
-                        className="rounded-full border border-amber-200/80 bg-amber-50/80 px-3 py-0.5 text-sm text-amber-900
-                          transition-all duration-150 hover:border-amber-300 hover:bg-amber-100 hover:shadow-sm
-                          dark:border-amber-800/40 dark:bg-amber-950/30 dark:text-amber-200
-                          dark:hover:border-amber-700 dark:hover:bg-amber-900/40"
+                        className="rounded-full border border-pink-200 bg-pink-50/80 px-3 py-0.5 text-sm font-medium text-pink-900
+                          transition-all duration-150 hover:border-pink-300 hover:bg-pink-100 hover:shadow-sm
+                          dark:border-pink-800/40 dark:bg-pink-950/30 dark:text-pink-200
+                          dark:hover:border-pink-700 dark:hover:bg-pink-900/40"
                       >
                         {q}
                       </button>
