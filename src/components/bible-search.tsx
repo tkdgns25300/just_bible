@@ -92,7 +92,7 @@ export default function BibleSearch() {
   return (
     <main
       className={`relative flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
-        hasResults ? "pt-12 pb-16" : "justify-center pb-32"
+        hasResults ? "pt-12 pb-16" : "pt-[18vh] pb-16"
       }`}
     >
       <div className="absolute top-4 right-4">
@@ -100,11 +100,18 @@ export default function BibleSearch() {
       </div>
       <h1
         className={`font-[family-name:var(--font-title)] tracking-tight transition-all duration-300 ${
-          hasResults ? "mb-6 text-5xl sm:text-6xl" : "mb-10 text-7xl sm:text-8xl"
+          hasResults ? "mb-6 cursor-pointer text-6xl sm:text-7xl" : "mb-3 text-8xl sm:text-9xl"
         }`}
+        style={{ WebkitTextStroke: "1.5px currentColor" }}
+        onClick={hasResults ? () => setQuery("") : undefined}
       >
         Just Bible
       </h1>
+      {!hasResults && (
+        <p className="mb-10 text-base text-gray-400 sm:text-lg dark:text-gray-500">
+          당신의 일상에 가장 가까운 성경 사전
+        </p>
+      )}
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
       <div className="mt-6 flex flex-col gap-4">
         <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
@@ -143,6 +150,53 @@ export default function BibleSearch() {
           </div>
         )}
       </div>
+      {!hasQuery && !error && (
+        <div className="mt-10 w-full max-w-2xl" style={{ animation: "fadeIn 0.4s ease-out" }}>
+          <div className="rounded-2xl border border-amber-200/60 bg-gradient-to-b from-amber-50/80 to-orange-50/30
+            p-5 shadow-sm sm:p-7
+            dark:border-amber-900/40 dark:from-amber-950/20 dark:to-orange-950/10">
+            <p className="mb-1 text-center text-lg font-semibold text-amber-900 dark:text-amber-200">
+              말씀을 검색하세요
+            </p>
+            <p className="mb-6 text-center text-xs text-amber-700/70 dark:text-amber-400/60">
+              구절 주소 또는 키워드로 빠르게 찾고, 바로 복사할 수 있습니다
+            </p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {[
+                { icon: "📖", title: "주소로 찾기", desc: "정확한 장절로 바로 이동하세요", examples: ["창 1:1", "요 3:16"] },
+                { icon: "📏", title: "범위로 읽기", desc: "연속된 구절을 한 번에 읽으세요", examples: ["시 23:1-6", "마 5:1-12"] },
+                { icon: "⌨️", title: "초성 · 약어 검색", desc: "빠르고 간편하게 검색하세요", examples: ["ㅊㅅㄱ", "로마서 8"] },
+                { icon: "🔍", title: "키워드 찾기", desc: "주제별 말씀을 발견하세요", examples: ["사랑", "위로", "소망"] },
+              ].map(({ icon, title, desc, examples }) => (
+                <div key={title}
+                  className="rounded-xl border border-amber-100 bg-white/70 px-4 py-4
+                    dark:border-amber-900/30 dark:bg-amber-950/20"
+                >
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="text-lg">{icon}</span>
+                    <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">{title}</p>
+                  </div>
+                  <p className="mb-3 text-xs text-amber-700/60 dark:text-amber-400/50">{desc}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {examples.map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => setQuery(q)}
+                        className="rounded-full border border-amber-200/80 bg-amber-50/80 px-3 py-0.5 text-sm text-amber-900
+                          transition-all duration-150 hover:border-amber-300 hover:bg-amber-100 hover:shadow-sm
+                          dark:border-amber-800/40 dark:bg-amber-950/30 dark:text-amber-200
+                          dark:hover:border-amber-700 dark:hover:bg-amber-900/40"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       {error && (
         <div className="mt-8 text-center text-sm text-red-500 dark:text-red-400">
           {error}

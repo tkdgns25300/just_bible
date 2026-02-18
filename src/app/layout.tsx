@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, DM_Serif_Display } from "next/font/google";
+import { Geist, Geist_Mono, Damion } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const dmSerifDisplay = DM_Serif_Display({
+const damion = Damion({
   variable: "--font-title",
   weight: "400",
   subsets: ["latin"],
@@ -42,7 +42,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${dmSerifDisplay.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${damion.variable} antialiased`}
       >
         {children}
       </body>
