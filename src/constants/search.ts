@@ -25,11 +25,11 @@ export type CopyFormatId = (typeof COPY_FORMATS)[number]["id"];
 export const STORAGE_KEY_FONT_SIZE = "just-bible-font-size";
 export const DEFAULT_FONT_SIZE = 2;
 export const FONT_SIZES = [
-  { label: "최소", class: "text-sm leading-relaxed" },
-  { label: "작게", class: "text-base leading-relaxed" },
-  { label: "보통", class: "text-lg leading-relaxed" },
-  { label: "크게", class: "text-xl leading-relaxed" },
-  { label: "최대", class: "text-2xl leading-relaxed" },
+  { label: "최소", class: "text-sm" },
+  { label: "작게", class: "text-base" },
+  { label: "보통", class: "text-lg" },
+  { label: "크게", class: "text-xl" },
+  { label: "최대", class: "text-2xl" },
 ] as const;
 
 export const STORAGE_KEY_FONT_WEIGHT = "just-bible-font-weight";

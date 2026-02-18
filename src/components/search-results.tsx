@@ -39,7 +39,8 @@ function HighlightedText({ text, keyword }: { text: string; keyword?: string }) 
         <span key={i}>
           {part}
           {i < parts.length - 1 && (
-            <mark className="bg-yellow-200 text-inherit dark:bg-yellow-700">{keyword}</mark>
+            <mark className="rounded-sm bg-blue-100 px-0.5 font-semibold text-blue-700
+              dark:bg-blue-900/50 dark:text-blue-300">{keyword}</mark>
           )}
         </span>
       ))}
@@ -267,10 +268,14 @@ export default function SearchResults({
           />
         )}
         <div className="mx-auto w-full max-w-2xl">
-          <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-            {results.length}개 결과
+          <p className="mb-6 text-sm text-gray-400 dark:text-gray-500">
+            {keyword ? (
+              <><span className="font-medium text-gray-600 dark:text-gray-300">&ldquo;{keyword}&rdquo;</span> 검색 결과 {results.length}건 <span className="text-gray-300 dark:text-gray-600">·</span> {translationName}</>
+            ) : (
+              <>{results.length}개 결과 <span className="text-gray-300 dark:text-gray-600">·</span> {translationName}</>
+            )}
           </p>
-          <ul className="space-y-4">
+          <ul className="space-y-1">
             {visibleResults.map((result, index) => {
               const isSelected = selectedIndices.has(index);
               return (
@@ -282,19 +287,19 @@ export default function SearchResults({
                   onTouchStart={isTouch ? () => handleTouchStart(index) : undefined}
                   onTouchEnd={isTouch ? handleTouchEnd : undefined}
                   onTouchMove={isTouch ? handleTouchMove : undefined}
-                  className={`group cursor-pointer rounded-lg border px-4 py-3
-                    transition-colors duration-150
+                  className={`group cursor-pointer rounded-md border-l-2 py-3 pr-4 pl-4
+                    transition-all duration-150
                     ${isSelected
-                      ? "border-blue-400 bg-blue-50 dark:border-blue-500 dark:bg-blue-950"
-                      : "border-gray-200 hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+                      ? "border-l-blue-500 bg-blue-50/80 dark:border-l-blue-400 dark:bg-blue-950/50"
+                      : "border-l-gray-200 hover:border-l-gray-400 hover:bg-gray-50/50 dark:border-l-gray-700 dark:hover:border-l-gray-500 dark:hover:bg-gray-800/50"
                     }`}
                   style={index < 10 ? {
                     animation: "fadeInUp 0.3s ease-out both",
                     animationDelay: `${index * 0.03}s`,
                   } : undefined}
                 >
-                  <div className="mb-1 flex items-center justify-between">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <p className="text-xs font-medium tracking-wide text-gray-400 dark:text-gray-500">
                       {result.bookName} {result.chapter}:{result.verse}
                     </p>
                     {!isTouch && (
@@ -303,15 +308,15 @@ export default function SearchResults({
                           e.stopPropagation();
                           handleCopy(result);
                         }}
-                        className="text-gray-400 opacity-0 transition-opacity duration-150
-                          hover:text-gray-600 group-hover:opacity-100
-                          dark:text-gray-500 dark:hover:text-gray-300"
+                        className="text-gray-300 opacity-0 transition-opacity duration-150
+                          hover:text-gray-500 group-hover:opacity-100
+                          dark:text-gray-600 dark:hover:text-gray-400"
                       >
                         <CopyIcon />
                       </button>
                     )}
                   </div>
-                  <p className={fontSizeClass}>
+                  <p className={`leading-[1.75] ${fontSizeClass}`}>
                     <HighlightedText text={result.text} keyword={keyword} />
                   </p>
                 </li>
