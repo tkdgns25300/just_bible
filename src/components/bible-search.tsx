@@ -99,7 +99,14 @@ export default function BibleSearch() {
         >
           JB
         </button>
-        <ThemeToggle />
+        <div className="flex items-center gap-4">
+          <a href="https://forms.gle/gX6zrLTHfRt6Hyj97" target="_blank" rel="noopener noreferrer"
+            className="rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition-colors
+              hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300">
+            의견 보내기
+          </a>
+          <ThemeToggle />
+        </div>
       </header>
       <main
         className={`relative flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
