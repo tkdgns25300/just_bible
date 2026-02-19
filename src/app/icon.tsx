@@ -32,15 +32,14 @@ export default async function Icon() {
           height: "100%",
           alignItems: "center",
           justifyContent: "center",
-          background: "#111",
-          borderRadius: "6px",
+          background: "transparent",
         }}
       >
         <span
           style={{
             fontFamily: "Damion",
             fontSize: "22px",
-            color: "#fff",
+            color: "#111",
             marginTop: "-2px",
           }}
         >
