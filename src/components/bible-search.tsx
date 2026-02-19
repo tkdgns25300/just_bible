@@ -90,14 +90,22 @@ export default function BibleSearch() {
   const isEmpty = hasQuery && !isLoading && results.length === 0 && !error;
 
   return (
-    <main
-      className={`relative flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
-        hasResults ? "pt-12 pb-16" : "pt-[18vh] pb-16"
-      }`}
-    >
-      <div className="absolute top-4 right-4">
+    <>
+      <header className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-5 py-3 sm:px-8">
+        <button
+          onClick={() => setQuery("")}
+          className="cursor-pointer font-[family-name:var(--font-title)] text-2xl tracking-tight transition-opacity hover:opacity-70"
+          style={{ WebkitTextStroke: "0.8px currentColor" }}
+        >
+          JB
+        </button>
         <ThemeToggle />
-      </div>
+      </header>
+      <main
+        className={`relative flex min-h-dvh flex-col items-center px-4 transition-all duration-300 sm:px-6 ${
+          hasResults ? "pt-16 pb-16" : "pt-[18vh] pb-16"
+        }`}
+      >
       <h1
         className={`font-[family-name:var(--font-title)] tracking-tight transition-all duration-300 ${
           hasResults ? "mb-6 cursor-pointer text-7xl sm:text-8xl" : "mb-1 text-[7rem] sm:text-[9rem]"
@@ -109,7 +117,7 @@ export default function BibleSearch() {
       </h1>
       {!hasResults && (
         <p className="mb-10 text-lg text-gray-400 sm:text-xl dark:text-gray-500">
-          당신의 일상에 가장 가까운 성경 사전
+          당신의 일상에 가장 단순한 성경 사전
         </p>
       )}
       <SearchBar value={query} onChange={setQuery} isLoading={isLoading} />
@@ -232,5 +240,6 @@ export default function BibleSearch() {
         </div>
       )}
     </main>
+    </>
   );
 }
