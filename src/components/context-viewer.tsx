@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { BOOKS } from "@/constants/bible";
 import type { Chapter } from "@/types/bible";
 
 interface ContextViewerProps {
   bookName: string;
   chapter: Chapter;
-  highlightVerse: number;
+  highlightVerse?: number;
   fontSizeClass: string;
   onClose: () => void;
+  bookId?: number;
+  onChapterChange?: (bookId: number, chapter: number) => void;
 }
 
 export default function ContextViewer({
@@ -17,8 +20,11 @@ export default function ContextViewer({
   highlightVerse,
   fontSizeClass,
   onClose,
+  bookId,
+  onChapterChange,
 }: ContextViewerProps) {
   const highlightRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -28,10 +34,16 @@ export default function ContextViewer({
   }, []);
 
   useEffect(() => {
-    if (highlightRef.current) {
+    if (highlightVerse && highlightRef.current) {
       highlightRef.current.scrollIntoView({ block: "center" });
     }
-  }, []);
+  }, [highlightVerse]);
+
+  useEffect(() => {
+    if (!highlightVerse && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [chapter, highlightVerse]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -40,6 +52,10 @@ export default function ContextViewer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  const bookMeta = bookId ? BOOKS.find((b) => b.id === bookId) : undefined;
+  const hasPrev = bookId !== undefined && chapter.chapter > 1;
+  const hasNext = bookId !== undefined && bookMeta !== undefined && chapter.chapter < bookMeta.chapters;
 
   return (
     <div
@@ -80,10 +96,10 @@ export default function ContextViewer({
             </svg>
           </button>
         </div>
-        <div className="overflow-y-auto px-6 pb-6">
+        <div ref={scrollContainerRef} className="overflow-y-auto px-6 pb-6">
           <div className="space-y-0">
             {chapter.verses.map((verse) => {
-              const isHighlighted = verse.verse === highlightVerse;
+              const isHighlighted = highlightVerse !== undefined && verse.verse === highlightVerse;
               return (
                 <div
                   key={verse.verse}
@@ -108,6 +124,34 @@ export default function ContextViewer({
               );
             })}
           </div>
+          {onChapterChange && bookId !== undefined && (
+            <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
+              <button
+                onClick={() => hasPrev && onChapterChange(bookId, chapter.chapter - 1)}
+                disabled={!hasPrev}
+                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium
+                  transition-colors hover:bg-gray-100 disabled:invisible
+                  dark:hover:bg-gray-800"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                  <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z" clipRule="evenodd" />
+                </svg>
+                이전장
+              </button>
+              <button
+                onClick={() => hasNext && onChapterChange(bookId, chapter.chapter + 1)}
+                disabled={!hasNext}
+                className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium
+                  transition-colors hover:bg-gray-100 disabled:invisible
+                  dark:hover:bg-gray-800"
+              >
+                다음장
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                  <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

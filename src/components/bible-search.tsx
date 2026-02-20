@@ -27,6 +27,7 @@ import FontSizeControl from "@/components/font-size-control";
 import FontWeightControl from "@/components/font-weight-control";
 import ScopeFilter from "@/components/scope-filter";
 import ThemeToggle from "@/components/theme-toggle";
+import BibleBrowser from "@/components/bible-browser";
 
 export default function BibleSearch() {
   const [query, setQuery] = useState("");
@@ -167,6 +168,12 @@ export default function BibleSearch() {
       </div>
       {!hasQuery && !error && (
         <div className="mt-10 w-full max-w-2xl" style={{ animation: "fadeIn 0.4s ease-out" }}>
+          <div className="mb-6">
+            <BibleBrowser
+              bible={bible}
+              fontSizeClass={`${FONT_SIZES[fontSizeIndex].class} ${FONT_WEIGHTS[fontWeightIndex].class}`}
+            />
+          </div>
           <div className="rounded-2xl border border-pink-200/70 bg-gradient-to-b from-pink-50 to-rose-50/60
             p-5 shadow-sm sm:p-7
             dark:border-pink-900/40 dark:from-pink-950/25 dark:to-rose-950/15">
