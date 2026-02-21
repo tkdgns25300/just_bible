@@ -41,7 +41,7 @@ export default function ScopeFilter({ scope, onChange }: ScopeFilterProps) {
           onChange(val ? Number(val) : "all");
         }}
         className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
-          appearance-none pr-7
+          appearance-none pr-7 sm:py-2.5 sm:text-base
           ${
             isBookSelected
               ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
