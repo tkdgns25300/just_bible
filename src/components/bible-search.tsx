@@ -134,23 +134,27 @@ export default function BibleSearch() {
         </p>
       )}
       {(!hasResults || isReadMode) && (
-        <div className="mb-6 flex gap-2">
+        <div className="mb-8 flex w-full max-w-md rounded-2xl bg-gray-100 p-1.5 dark:bg-gray-800">
           {(["search", "read"] as const).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
-                sm:px-5 sm:py-2.5 sm:text-base
+              className={`flex-1 rounded-xl py-3 text-base font-semibold transition-all duration-200
+                sm:text-lg
                 ${
                   mode === m
-                    ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                    ? "bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-gray-100"
+                    : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                 }`}
             >
               {m === "search" ? "검색" : "읽기"}
             </button>
           ))}
         </div>
+      )}
+      {(!hasResults || isReadMode) && (
+        <div className="mb-8 h-px w-full max-w-6xl bg-gradient-to-r from-transparent via-gray-200 to-transparent
+          dark:via-gray-700" />
       )}
       {!isReadMode && (
         <>

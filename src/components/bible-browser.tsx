@@ -70,56 +70,60 @@ export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps
 
   return (
     <div className="w-full max-w-2xl">
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <select
-          value={selectedBookId}
-          onChange={(e) => handleBookChange(Number(e.target.value))}
-          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
-            dark:border-gray-700 dark:bg-gray-800"
-        >
-          <optgroup label="구약">
-            {BOOKS.slice(0, OLD_TESTAMENT_COUNT).map((b) => (
-              <option key={b.id} value={b.id}>{b.name}</option>
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2">
+          <select
+            value={selectedBookId}
+            onChange={(e) => handleBookChange(Number(e.target.value))}
+            className="w-32 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
+              dark:border-gray-700 dark:bg-gray-800"
+          >
+            <optgroup label="구약">
+              {BOOKS.slice(0, OLD_TESTAMENT_COUNT).map((b) => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </optgroup>
+            <optgroup label="신약">
+              {BOOKS.slice(OLD_TESTAMENT_COUNT).map((b) => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </optgroup>
+          </select>
+          <select
+            value={selectedChapter}
+            onChange={(e) => handleChapterChange(Number(e.target.value))}
+            className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
+              dark:border-gray-700 dark:bg-gray-800"
+          >
+            {Array.from({ length: selectedBookMeta.chapters }, (_, i) => i + 1).map((ch) => (
+              <option key={ch} value={ch}>{ch}장</option>
             ))}
-          </optgroup>
-          <optgroup label="신약">
-            {BOOKS.slice(OLD_TESTAMENT_COUNT).map((b) => (
-              <option key={b.id} value={b.id}>{b.name}</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={startVerse}
+            onChange={(e) => handleStartVerseChange(Number(e.target.value))}
+            className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
+              dark:border-gray-700 dark:bg-gray-800"
+          >
+            <option value={0}>시작절</option>
+            {Array.from({ length: totalVerses }, (_, i) => i + 1).map((v) => (
+              <option key={v} value={v}>{v}절</option>
             ))}
-          </optgroup>
-        </select>
-        <select
-          value={selectedChapter}
-          onChange={(e) => handleChapterChange(Number(e.target.value))}
-          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
-            dark:border-gray-700 dark:bg-gray-800"
-        >
-          {Array.from({ length: selectedBookMeta.chapters }, (_, i) => i + 1).map((ch) => (
-            <option key={ch} value={ch}>{ch}장</option>
-          ))}
-        </select>
-        <select
-          value={startVerse}
-          onChange={(e) => handleStartVerseChange(Number(e.target.value))}
-          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
-            dark:border-gray-700 dark:bg-gray-800"
-        >
-          <option value={0}>시작절</option>
-          {Array.from({ length: totalVerses }, (_, i) => i + 1).map((v) => (
-            <option key={v} value={v}>{v}절</option>
-          ))}
-        </select>
-        <select
-          value={endVerse}
-          onChange={(e) => handleEndVerseChange(Number(e.target.value))}
-          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
-            dark:border-gray-700 dark:bg-gray-800"
-        >
-          <option value={0}>끝절</option>
-          {Array.from({ length: totalVerses - (startVerse > 0 ? startVerse - 1 : 0) }, (_, i) => i + (startVerse || 1)).map((v) => (
-            <option key={v} value={v}>{v}절</option>
-          ))}
-        </select>
+          </select>
+          <select
+            value={endVerse}
+            onChange={(e) => handleEndVerseChange(Number(e.target.value))}
+            className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
+              dark:border-gray-700 dark:bg-gray-800"
+          >
+            <option value={0}>끝절</option>
+            {Array.from({ length: totalVerses - (startVerse > 0 ? startVerse - 1 : 0) }, (_, i) => i + (startVerse || 1)).map((v) => (
+              <option key={v} value={v}>{v}절</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {chapter && (
