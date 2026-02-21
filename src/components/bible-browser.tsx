@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BOOKS, OLD_TESTAMENT_COUNT } from "@/constants/bible";
 import type { BibleTranslation } from "@/types/bible";
 
@@ -12,32 +12,65 @@ interface BibleBrowserProps {
 export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps) {
   const [selectedBookId, setSelectedBookId] = useState(1);
   const [selectedChapter, setSelectedChapter] = useState(1);
+  const [startVerse, setStartVerse] = useState(0);
+  const [endVerse, setEndVerse] = useState(0);
 
   const selectedBookMeta = BOOKS.find((b) => b.id === selectedBookId)!;
+
+  const book = bible?.books.find((b) => b.id === selectedBookId);
+  const chapter = book?.chapters.find((c) => c.chapter === selectedChapter);
+  const totalVerses = chapter?.verses.length ?? 0;
 
   function handleBookChange(bookId: number) {
     setSelectedBookId(bookId);
     setSelectedChapter(1);
+    setStartVerse(0);
+    setEndVerse(0);
   }
 
   function handleChapterChange(chapter: number) {
     setSelectedChapter(chapter);
+    setStartVerse(0);
+    setEndVerse(0);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleStartVerseChange(verse: number) {
+    setStartVerse(verse);
+    if (verse > 0 && endVerse > 0 && endVerse < verse) {
+      setEndVerse(verse);
+    }
+  }
+
+  function handleEndVerseChange(verse: number) {
+    setEndVerse(verse);
+    if (verse > 0 && startVerse === 0) {
+      setStartVerse(verse);
+    }
   }
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [selectedBookId]);
 
-  const book = bible?.books.find((b) => b.id === selectedBookId);
-  const chapter = book?.chapters.find((c) => c.chapter === selectedChapter);
+  const filteredVerses = useMemo(() => {
+    if (!chapter) return [];
+    if (startVerse === 0 && endVerse === 0) return chapter.verses;
+    const from = startVerse || 1;
+    const to = endVerse || totalVerses;
+    return chapter.verses.filter((v) => v.verse >= from && v.verse <= to);
+  }, [chapter, startVerse, endVerse, totalVerses]);
 
   const hasPrev = selectedChapter > 1;
   const hasNext = selectedChapter < selectedBookMeta.chapters;
 
+  const displayLabel = startVerse > 0 || endVerse > 0
+    ? `${chapter?.chapter}:${startVerse || 1}-${endVerse || totalVerses}절`
+    : `${chapter?.chapter}장`;
+
   return (
     <div className="w-full max-w-2xl">
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         <select
           value={selectedBookId}
           onChange={(e) => handleBookChange(Number(e.target.value))}
@@ -65,16 +98,38 @@ export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps
             <option key={ch} value={ch}>{ch}장</option>
           ))}
         </select>
+        <select
+          value={startVerse}
+          onChange={(e) => handleStartVerseChange(Number(e.target.value))}
+          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
+            dark:border-gray-700 dark:bg-gray-800"
+        >
+          <option value={0}>시작절</option>
+          {Array.from({ length: totalVerses }, (_, i) => i + 1).map((v) => (
+            <option key={v} value={v}>{v}절</option>
+          ))}
+        </select>
+        <select
+          value={endVerse}
+          onChange={(e) => handleEndVerseChange(Number(e.target.value))}
+          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm
+            dark:border-gray-700 dark:bg-gray-800"
+        >
+          <option value={0}>끝절</option>
+          {Array.from({ length: totalVerses - (startVerse > 0 ? startVerse - 1 : 0) }, (_, i) => i + (startVerse || 1)).map((v) => (
+            <option key={v} value={v}>{v}절</option>
+          ))}
+        </select>
       </div>
 
       {chapter && (
         <div className="mt-8" style={{ animation: "fadeIn 0.3s ease-out" }}>
           <div className="mb-4 flex items-baseline gap-2">
             <h2 className="text-lg font-bold">{selectedBookMeta.name}</h2>
-            <span className="text-sm text-gray-400 dark:text-gray-500">{chapter.chapter}장</span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">{displayLabel}</span>
           </div>
           <div className="space-y-0">
-            {chapter.verses.map((verse) => (
+            {filteredVerses.map((verse) => (
               <div
                 key={verse.verse}
                 className="flex gap-3 border-l-2 border-l-transparent py-3 pl-4 pr-2"
