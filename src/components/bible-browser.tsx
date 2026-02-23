@@ -7,9 +7,18 @@ import type { BibleTranslation } from "@/types/bible";
 interface BibleBrowserProps {
   bible: BibleTranslation | null;
   fontSizeClass: string;
+  compareBible?: BibleTranslation | null;
+  primaryName?: string;
+  compareName?: string;
 }
 
-export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps) {
+export default function BibleBrowser({
+  bible,
+  fontSizeClass,
+  compareBible,
+  primaryName,
+  compareName,
+}: BibleBrowserProps) {
   const [selectedBookId, setSelectedBookId] = useState(1);
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [startVerse, setStartVerse] = useState(0);
@@ -20,6 +29,11 @@ export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps
   const book = bible?.books.find((b) => b.id === selectedBookId);
   const chapter = book?.chapters.find((c) => c.chapter === selectedChapter);
   const totalVerses = chapter?.verses.length ?? 0;
+
+  const compareBook = compareBible?.books.find((b) => b.id === selectedBookId);
+  const compareChapter = compareBook?.chapters.find((c) => c.chapter === selectedChapter);
+
+  const isCompareMode = compareBible !== null && compareBible !== undefined;
 
   function handleBookChange(bookId: number) {
     setSelectedBookId(bookId);
@@ -61,6 +75,14 @@ export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps
     return chapter.verses.filter((v) => v.verse >= from && v.verse <= to);
   }, [chapter, startVerse, endVerse, totalVerses]);
 
+  const filteredCompareVerses = useMemo(() => {
+    if (!compareChapter) return [];
+    if (startVerse === 0 && endVerse === 0) return compareChapter.verses;
+    const from = startVerse || 1;
+    const to = endVerse || totalVerses;
+    return compareChapter.verses.filter((v) => v.verse >= from && v.verse <= to);
+  }, [compareChapter, startVerse, endVerse, totalVerses]);
+
   const hasPrev = selectedChapter > 1;
   const hasNext = selectedChapter < selectedBookMeta.chapters;
 
@@ -69,7 +91,7 @@ export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps
     : `${chapter?.chapter}장`;
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className={`w-full ${isCompareMode ? "max-w-5xl" : "max-w-2xl"}`}>
       <div className="mx-auto grid w-full max-w-xs grid-cols-2 gap-2 sm:flex sm:w-auto sm:max-w-none sm:justify-center">
         <select
           value={selectedBookId}
@@ -136,21 +158,109 @@ export default function BibleBrowser({ bible, fontSizeClass }: BibleBrowserProps
             <h2 className="text-lg font-bold">{selectedBookMeta.name}</h2>
             <span className="text-sm text-gray-400 dark:text-gray-500">{displayLabel}</span>
           </div>
-          <div className="space-y-0">
-            {filteredVerses.map((verse) => (
-              <div
-                key={verse.verse}
-                className="flex gap-3 border-l-2 border-l-transparent py-3 pl-4 pr-2"
-              >
-                <span className="shrink-0 pt-0.5 text-xs font-medium tabular-nums text-gray-300 dark:text-gray-600">
-                  {verse.verse}
-                </span>
-                <p className={`leading-[1.8] ${fontSizeClass}`}>
-                  {verse.text}
-                </p>
+
+          {!isCompareMode && (
+            <div className="space-y-0">
+              {filteredVerses.map((verse) => (
+                <div
+                  key={verse.verse}
+                  className="flex gap-3 border-l-2 border-l-transparent py-3 pl-4 pr-2"
+                >
+                  <span className="shrink-0 pt-0.5 text-xs font-medium tabular-nums text-gray-300 dark:text-gray-600">
+                    {verse.verse}
+                  </span>
+                  <p className={`leading-[1.8] ${fontSizeClass}`}>
+                    {verse.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {isCompareMode && (
+            <>
+              {/* Desktop: side-by-side columns */}
+              <div className="hidden sm:grid sm:grid-cols-2 sm:gap-6">
+                <div>
+                  <div className="mb-3 text-xs font-semibold text-gray-400 dark:text-gray-500">
+                    {primaryName}
+                  </div>
+                  <div className="space-y-0">
+                    {filteredVerses.map((verse) => (
+                      <div
+                        key={verse.verse}
+                        className="flex gap-3 border-l-2 border-l-transparent py-3 pl-4 pr-2"
+                      >
+                        <span className="shrink-0 pt-0.5 text-xs font-medium tabular-nums text-gray-300 dark:text-gray-600">
+                          {verse.verse}
+                        </span>
+                        <p className={`leading-[1.8] ${fontSizeClass}`}>
+                          {verse.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="mb-3 text-xs font-semibold text-gray-400 dark:text-gray-500">
+                    {compareName}
+                  </div>
+                  <div className="space-y-0">
+                    {filteredCompareVerses.map((verse) => (
+                      <div
+                        key={verse.verse}
+                        className="flex gap-3 border-l-2 border-l-transparent py-3 pl-4 pr-2"
+                      >
+                        <span className="shrink-0 pt-0.5 text-xs font-medium tabular-nums text-gray-300 dark:text-gray-600">
+                          {verse.verse}
+                        </span>
+                        <p className={`leading-[1.8] ${fontSizeClass}`}>
+                          {verse.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
+
+              {/* Mobile: verse-interleaved */}
+              <div className="space-y-0 sm:hidden">
+                {filteredVerses.map((verse) => {
+                  const compareVerse = filteredCompareVerses.find((v) => v.verse === verse.verse);
+                  return (
+                    <div key={verse.verse} className="border-b border-gray-100 py-3 dark:border-gray-800">
+                      <div className="flex gap-3 pl-4 pr-2">
+                        <span className="shrink-0 pt-0.5 text-xs font-bold tabular-nums text-gray-400 dark:text-gray-500">
+                          {verse.verse}
+                        </span>
+                        <div className="flex-1 space-y-2">
+                          <div>
+                            <span className="mr-1.5 text-[10px] font-semibold text-gray-400 dark:text-gray-500">
+                              {primaryName}
+                            </span>
+                            <p className={`inline leading-[1.8] ${fontSizeClass}`}>
+                              {verse.text}
+                            </p>
+                          </div>
+                          {compareVerse && (
+                            <div>
+                              <span className="mr-1.5 text-[10px] font-semibold text-gray-400 dark:text-gray-500">
+                                {compareName}
+                              </span>
+                              <p className={`inline leading-[1.8] ${fontSizeClass}`}>
+                                {compareVerse.text}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
           <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
             <button
               onClick={() => hasPrev && handleChapterChange(selectedChapter - 1)}

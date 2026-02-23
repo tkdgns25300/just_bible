@@ -13,6 +13,7 @@ import {
   STORAGE_KEY_FONT_SIZE,
   STORAGE_KEY_FONT_WEIGHT,
   STORAGE_KEY_TRANSLATION,
+  TRANSLATIONS,
   type CopyFormatId,
   type SearchScope,
 } from "@/constants/search";
@@ -40,6 +41,7 @@ export default function BibleSearch() {
   const [fontWeightIndex, setFontWeightIndex] = useState(DEFAULT_FONT_WEIGHT);
   const [scope, setScope] = useState<SearchScope>("all");
   const [showMore, setShowMore] = useState(false);
+  const [compareCode, setCompareCode] = useState<string | null>(null);
 
   useEffect(() => {
     const savedTranslation = localStorage.getItem(STORAGE_KEY_TRANSLATION);
@@ -57,8 +59,10 @@ export default function BibleSearch() {
 
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
   const { bible, isLoading, error } = useBible(translationCode);
+  const { bible: compareBible } = useBible(compareCode ?? translationCode);
 
   function handleTranslationChange(code: string) {
+    if (compareCode === code) setCompareCode(null);
     setTranslationCode(code);
     localStorage.setItem(STORAGE_KEY_TRANSLATION, code);
   }
@@ -286,6 +290,26 @@ export default function BibleSearch() {
               <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">역본</span>
               <TranslationTabs activeCode={translationCode} onChange={handleTranslationChange} />
             </div>
+            <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">비교</span>
+              <div className="flex items-center gap-2">
+                {TRANSLATIONS.filter((t) => t.code !== translationCode).map((t) => (
+                  <button
+                    key={t.code}
+                    onClick={() => setCompareCode(compareCode === t.code ? null : t.code)}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-150
+                      sm:px-5 sm:py-2.5 sm:text-base
+                      ${
+                        compareCode === t.code
+                          ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+                      }`}
+                  >
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            </div>
             <button
               onClick={() => setShowMore((prev) => !prev)}
               className="flex items-center gap-1 self-center text-xs text-gray-400 transition-colors
@@ -313,6 +337,9 @@ export default function BibleSearch() {
           <BibleBrowser
             bible={bible}
             fontSizeClass={fontSizeClass}
+            compareBible={compareCode ? compareBible : null}
+            primaryName={TRANSLATIONS.find((t) => t.code === translationCode)?.name}
+            compareName={TRANSLATIONS.find((t) => t.code === compareCode)?.name}
           />
         </div>
       )}
