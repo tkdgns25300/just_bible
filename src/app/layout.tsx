@@ -27,6 +27,18 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Just Bible",
   description: "성경 본문을 빠르게 검색하고 복사할 수 있는 웹 애플리케이션",
+  openGraph: {
+    title: "Just Bible",
+    description: "당신의 일상에 가장 단순한 성경 사전",
+    siteName: "Just Bible",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Just Bible",
+    description: "당신의 일상에 가장 단순한 성경 사전",
+  },
 };
 
 const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("just-bible-theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`;
