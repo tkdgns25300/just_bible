@@ -134,7 +134,7 @@ export default function BibleSearch() {
       </h1>
       {(!hasResults || isReadMode) && (
         <p className="mb-4 text-sm text-gray-400 sm:text-xl dark:text-gray-500">
-          당신의 일상에 가장 단순한 성경 사전
+          당신의 일상에 가장 편안한 성경 사전
         </p>
       )}
       {(!hasResults || isReadMode) && (

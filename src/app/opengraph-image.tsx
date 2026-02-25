@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Just Bible — 당신의 일상에 가장 단순한 성경 사전";
+export const alt = "Just Bible — 당신의 일상에 가장 편안한 성경 사전";
 
 const GOOGLE_FONTS_CSS_URL =
   "https://fonts.googleapis.com/css2?family=Damion&display=swap";
@@ -54,7 +54,7 @@ export default async function OGImage() {
             marginTop: "16px",
           }}
         >
-          당신의 일상에 가장 단순한 성경 사전
+          당신의 일상에 가장 편안한 성경 사전
         </span>
       </div>
     ),

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   description: "성경 본문을 빠르게 검색하고 복사할 수 있는 웹 애플리케이션",
   openGraph: {
     title: "Just Bible",
-    description: "당신의 일상에 가장 단순한 성경 사전",
+    description: "당신의 일상에 가장 편안한 성경 사전",
     siteName: "Just Bible",
     locale: "ko_KR",
     type: "website",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Just Bible",
-    description: "당신의 일상에 가장 단순한 성경 사전",
+    description: "당신의 일상에 가장 편안한 성경 사전",
   },
 };
 
