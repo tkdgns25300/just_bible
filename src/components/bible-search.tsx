@@ -204,11 +204,11 @@ export default function BibleSearch() {
             <div className="mt-10 w-full max-w-2xl" style={{ animation: "fadeIn 0.4s ease-out" }}>
               <div className="rounded-2xl border border-pink-200/70 bg-gradient-to-b from-pink-50 to-rose-50/60
                 p-5 shadow-sm sm:p-7
-                dark:border-pink-900/40 dark:from-pink-950/25 dark:to-rose-950/15">
-                <p className="mb-1 text-center text-lg font-semibold text-pink-900 dark:text-pink-200">
+                dark:border-slate-700/50 dark:from-slate-800/40 dark:to-blue-950/20">
+                <p className="mb-1 text-center text-lg font-semibold text-pink-900 dark:text-slate-100">
                   말씀을 검색하세요
                 </p>
-                <p className="mb-6 text-center text-xs text-pink-700/70 dark:text-pink-300/60">
+                <p className="mb-6 text-center text-xs text-pink-700/70 dark:text-slate-400/70">
                   구절 주소 또는 키워드로 빠르게 찾고, 바로 복사할 수 있습니다
                 </p>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -220,13 +220,13 @@ export default function BibleSearch() {
                   ].map(({ icon, title, desc, examples }) => (
                     <div key={title}
                       className="rounded-xl border border-pink-200/80 bg-white/80 px-4 py-4
-                        dark:border-pink-800/30 dark:bg-pink-950/20"
+                        dark:border-slate-700/40 dark:bg-slate-800/30"
                     >
                       <div className="mb-1 flex items-center gap-2">
-                        <span className="text-pink-400 dark:text-pink-400">{icon}</span>
-                        <p className="text-sm font-semibold text-pink-900 dark:text-pink-200">{title}</p>
+                        <span className="text-pink-400 dark:text-blue-400">{icon}</span>
+                        <p className="text-sm font-semibold text-pink-900 dark:text-slate-100">{title}</p>
                       </div>
-                      <p className="mb-3 text-xs text-pink-600/60 dark:text-pink-400/50">{desc}</p>
+                      <p className="mb-3 text-xs text-pink-600/60 dark:text-slate-400/60">{desc}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {examples.map((q) => (
                           <button
@@ -234,8 +234,8 @@ export default function BibleSearch() {
                             onClick={() => setQuery(q)}
                             className="rounded-full border border-pink-200 bg-pink-50/80 px-3 py-0.5 text-sm font-medium text-pink-900
                               transition-all duration-150 hover:border-pink-300 hover:bg-pink-100 hover:shadow-sm
-                              dark:border-pink-800/40 dark:bg-pink-950/30 dark:text-pink-200
-                              dark:hover:border-pink-700 dark:hover:bg-pink-900/40"
+                              dark:border-slate-600/50 dark:bg-slate-800/50 dark:text-slate-200
+                              dark:hover:border-blue-500/60 dark:hover:bg-slate-700/50"
                           >
                             {q}
                           </button>
