@@ -44,3 +44,9 @@ export const FONT_WEIGHTS = [
 export type SearchScope = "all" | "old" | "new" | number;
 
 export const STORAGE_KEY_THEME = "just-bible-theme";
+
+export const STORAGE_KEY_TTS_RATE = "just-bible-tts-rate";
+export const DEFAULT_TTS_RATE = 1;
+export const TTS_RATE_MIN = 0.5;
+export const TTS_RATE_MAX = 2;
+export const TTS_RATE_STEP = 0.1;

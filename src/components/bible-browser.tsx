@@ -10,6 +10,37 @@ interface BibleBrowserProps {
   compareBible?: BibleTranslation | null;
   primaryName?: string;
   compareName?: string;
+  isTtsSupported: boolean;
+  isTtsPlaying: boolean;
+  isTtsPaused: boolean;
+  onTtsPlayChapter: (texts: string[]) => void;
+  onTtsPause: () => void;
+  onTtsResume: () => void;
+  onTtsCancel: () => void;
+}
+
+function PlayIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function StopIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path fillRule="evenodd" d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z" clipRule="evenodd" />
+    </svg>
+  );
 }
 
 export default function BibleBrowser({
@@ -18,6 +49,13 @@ export default function BibleBrowser({
   compareBible,
   primaryName,
   compareName,
+  isTtsSupported,
+  isTtsPlaying,
+  isTtsPaused,
+  onTtsPlayChapter,
+  onTtsPause,
+  onTtsResume,
+  onTtsCancel,
 }: BibleBrowserProps) {
   const [selectedBookId, setSelectedBookId] = useState(1);
   const [selectedChapter, setSelectedChapter] = useState(1);
@@ -154,9 +192,45 @@ export default function BibleBrowser({
 
       {chapter && (
         <div className="mt-8" style={{ animation: "fadeIn 0.3s ease-out" }}>
-          <div className="mb-4 flex items-baseline gap-2">
-            <h2 className="text-lg font-bold">{selectedBookMeta.name}</h2>
-            <span className="text-sm text-gray-400 dark:text-gray-500">{displayLabel}</span>
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-lg font-bold">{selectedBookMeta.name}</h2>
+              <span className="text-sm text-gray-400 dark:text-gray-500">{displayLabel}</span>
+            </div>
+            {isTtsSupported && (
+              <div className="flex items-center gap-2">
+                {!isTtsPlaying ? (
+                  <button
+                    onClick={() => onTtsPlayChapter(filteredVerses.map((v) => v.text))}
+                    className="flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700
+                      transition-colors hover:bg-gray-200
+                      dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    <PlayIcon />
+                    이 장 읽어주기
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={isTtsPaused ? onTtsResume : onTtsPause}
+                      className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
+                        hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                      title={isTtsPaused ? "재생" : "일시정지"}
+                    >
+                      {isTtsPaused ? <PlayIcon /> : <PauseIcon />}
+                    </button>
+                    <button
+                      onClick={onTtsCancel}
+                      className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
+                        hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                      title="중지"
+                    >
+                      <StopIcon />
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {!isCompareMode && (

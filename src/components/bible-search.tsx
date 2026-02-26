@@ -5,6 +5,7 @@ import {
   DEFAULT_COPY_FORMAT,
   DEFAULT_FONT_SIZE,
   DEFAULT_FONT_WEIGHT,
+  DEFAULT_TTS_RATE,
   DEFAULT_TRANSLATION_CODE,
   FONT_SIZES,
   FONT_WEIGHTS,
@@ -12,6 +13,7 @@ import {
   STORAGE_KEY_COPY_FORMAT,
   STORAGE_KEY_FONT_SIZE,
   STORAGE_KEY_FONT_WEIGHT,
+  STORAGE_KEY_TTS_RATE,
   STORAGE_KEY_TRANSLATION,
   TRANSLATIONS,
   type CopyFormatId,
@@ -19,6 +21,7 @@ import {
 } from "@/constants/search";
 import { useBible } from "@/hooks/use-bible";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useSpeechSynthesis } from "@/hooks/use-speech-synthesis";
 import { parseQuery, searchBible } from "@/lib/search";
 import SearchBar from "@/components/search-bar";
 import SearchResults from "@/components/search-results";
@@ -28,6 +31,7 @@ import FontSizeControl from "@/components/font-size-control";
 import FontWeightControl from "@/components/font-weight-control";
 import ScopeFilter from "@/components/scope-filter";
 import ThemeToggle from "@/components/theme-toggle";
+import TtsRateControl from "@/components/tts-rate-control";
 import BibleBrowser from "@/components/bible-browser";
 
 type Mode = "search" | "read";
@@ -42,6 +46,7 @@ export default function BibleSearch() {
   const [scope, setScope] = useState<SearchScope>("all");
   const [showMore, setShowMore] = useState(false);
   const [compareCode, setCompareCode] = useState<string | null>(null);
+  const [ttsRate, setTtsRate] = useState(DEFAULT_TTS_RATE);
 
   useEffect(() => {
     const savedTranslation = localStorage.getItem(STORAGE_KEY_TRANSLATION);
@@ -55,7 +60,23 @@ export default function BibleSearch() {
 
     const savedFontWeight = localStorage.getItem(STORAGE_KEY_FONT_WEIGHT);
     if (savedFontWeight) setFontWeightIndex(Number(savedFontWeight));
+
+    const savedTtsRate = localStorage.getItem(STORAGE_KEY_TTS_RATE);
+    if (savedTtsRate) {
+      const n = Number(savedTtsRate);
+      if (!Number.isNaN(n)) setTtsRate(n);
+    }
   }, []);
+
+  const {
+    isPlaying: isTtsPlaying,
+    isPaused: isTtsPaused,
+    speakQueue: ttsSpeakQueue,
+    pause: ttsPause,
+    resume: ttsResume,
+    cancel: ttsCancel,
+    isSupported: isTtsSupported,
+  } = useSpeechSynthesis({ rate: ttsRate });
 
   const debouncedQuery = useDebounce(query, SEARCH_DEBOUNCE_MS);
   const { bible, isLoading, error } = useBible(translationCode);
@@ -80,6 +101,11 @@ export default function BibleSearch() {
   function handleFontWeightChange(index: number) {
     setFontWeightIndex(index);
     localStorage.setItem(STORAGE_KEY_FONT_WEIGHT, String(index));
+  }
+
+  function handleTtsRateChange(rate: number) {
+    setTtsRate(rate);
+    localStorage.setItem(STORAGE_KEY_TTS_RATE, String(rate));
   }
 
   const results = useMemo(() => {
@@ -197,6 +223,12 @@ export default function BibleSearch() {
                   <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">글자두께</span>
                   <FontWeightControl weightIndex={fontWeightIndex} onChange={handleFontWeightChange} />
                 </div>
+                {isTtsSupported && (
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+                    <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">읽기 속도</span>
+                    <TtsRateControl rate={ttsRate} onChange={handleTtsRateChange} />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -278,6 +310,13 @@ export default function BibleSearch() {
                 copyFormat={copyFormat}
                 fontSizeClass={fontSizeClass}
                 bible={bible}
+                isTtsSupported={isTtsSupported}
+                isTtsPlaying={isTtsPlaying}
+                isTtsPaused={isTtsPaused}
+                onTtsPlayAll={() => ttsSpeakQueue(results.map((r) => r.text))}
+                onTtsPause={ttsPause}
+                onTtsResume={ttsResume}
+                onTtsCancel={ttsCancel}
               />
             </div>
           )}
@@ -331,6 +370,12 @@ export default function BibleSearch() {
                   <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">글자두께</span>
                   <FontWeightControl weightIndex={fontWeightIndex} onChange={handleFontWeightChange} />
                 </div>
+                {isTtsSupported && (
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
+                    <span className="shrink-0 text-sm text-gray-400 sm:w-20 sm:text-right sm:text-base dark:text-gray-500">읽기 속도</span>
+                    <TtsRateControl rate={ttsRate} onChange={handleTtsRateChange} />
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -340,6 +385,13 @@ export default function BibleSearch() {
             compareBible={compareCode ? compareBible : null}
             primaryName={TRANSLATIONS.find((t) => t.code === translationCode)?.name}
             compareName={TRANSLATIONS.find((t) => t.code === compareCode)?.name}
+            isTtsSupported={isTtsSupported}
+            isTtsPlaying={isTtsPlaying}
+            isTtsPaused={isTtsPaused}
+            onTtsPlayChapter={(texts) => ttsSpeakQueue(texts)}
+            onTtsPause={ttsPause}
+            onTtsResume={ttsResume}
+            onTtsCancel={ttsCancel}
           />
         </div>
       )}

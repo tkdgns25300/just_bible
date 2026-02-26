@@ -15,6 +15,13 @@ interface SearchResultsProps {
   copyFormat: CopyFormatId;
   fontSizeClass: string;
   bible: BibleTranslation | null;
+  isTtsSupported: boolean;
+  isTtsPlaying: boolean;
+  isTtsPaused: boolean;
+  onTtsPlayAll: () => void;
+  onTtsPause: () => void;
+  onTtsResume: () => void;
+  onTtsCancel: () => void;
 }
 
 function CopyIcon() {
@@ -66,8 +73,33 @@ function rectsIntersect(
   return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 }
 
+function PlayIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path fillRule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
+function StopIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+      <path fillRule="evenodd" d="M4.5 7.5a3 3 0 0 1 3-3h9a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9Z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
 export default function SearchResults({
   results, keyword, translationName, copyFormat, fontSizeClass, bible,
+  isTtsSupported, isTtsPlaying, isTtsPaused, onTtsPlayAll, onTtsPause, onTtsResume, onTtsCancel,
 }: SearchResultsProps) {
   const [visibleCount, setVisibleCount] = useState(RESULTS_PER_PAGE);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -268,13 +300,49 @@ export default function SearchResults({
           />
         )}
         <div className="mx-auto w-full max-w-2xl">
-          <p className="mb-6 text-sm text-gray-400 dark:text-gray-500">
-            {keyword ? (
-              <><span className="font-medium text-gray-600 dark:text-gray-300">&ldquo;{keyword}&rdquo;</span> 검색 결과 {results.length}건 <span className="text-gray-300 dark:text-gray-600">·</span> {translationName}</>
-            ) : (
-              <>{results.length}개 결과 <span className="text-gray-300 dark:text-gray-600">·</span> {translationName}</>
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              {keyword ? (
+                <><span className="font-medium text-gray-600 dark:text-gray-300">&ldquo;{keyword}&rdquo;</span> 검색 결과 {results.length}건 <span className="text-gray-300 dark:text-gray-600">·</span> {translationName}</>
+              ) : (
+                <>{results.length}개 결과 <span className="text-gray-300 dark:text-gray-600">·</span> {translationName}</>
+              )}
+            </p>
+            {isTtsSupported && (
+              <div className="flex items-center gap-2">
+                {!isTtsPlaying ? (
+                  <button
+                    onClick={onTtsPlayAll}
+                    className="flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700
+                      transition-colors hover:bg-gray-200
+                      dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    <PlayIcon />
+                    검색 결과 읽어주기
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={isTtsPaused ? onTtsResume : onTtsPause}
+                      className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
+                        hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                      title={isTtsPaused ? "재생" : "일시정지"}
+                    >
+                      {isTtsPaused ? <PlayIcon /> : <PauseIcon />}
+                    </button>
+                    <button
+                      onClick={onTtsCancel}
+                      className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
+                        hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                      title="중지"
+                    >
+                      <StopIcon />
+                    </button>
+                  </>
+                )}
+              </div>
             )}
-          </p>
+          </div>
           <ul className="space-y-1">
             {visibleResults.map((result, index) => {
               const isSelected = selectedIndices.has(index);
