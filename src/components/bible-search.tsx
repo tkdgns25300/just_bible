@@ -159,9 +159,13 @@ export default function BibleSearch() {
             <Link href="/privacy" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">개인정보</Link>
           </nav>
           <a href="https://forms.gle/gX6zrLTHfRt6Hyj97" target="_blank" rel="noopener noreferrer"
-            className="hidden rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition-colors
-              hover:bg-gray-700 sm:inline-block dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300">
-            의견 보내기
+            className="rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition-colors
+              hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300">
+            <span className="hidden sm:inline">의견 보내기</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 sm:hidden">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
           </a>
           <ThemeToggle />
         </div>
