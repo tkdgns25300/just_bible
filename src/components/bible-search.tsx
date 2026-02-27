@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_COPY_FORMAT,
@@ -47,6 +48,7 @@ export default function BibleSearch() {
   const [showMore, setShowMore] = useState(false);
   const [compareCode, setCompareCode] = useState<string | null>(null);
   const [ttsRate, setTtsRate] = useState(DEFAULT_TTS_RATE);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const savedTranslation = localStorage.getItem(STORAGE_KEY_TRANSLATION);
@@ -66,6 +68,14 @@ export default function BibleSearch() {
       const n = Number(savedTtsRate);
       if (!Number.isNaN(n)) setTtsRate(n);
     }
+  }, []);
+
+  useEffect(() => {
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 10);
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const {
@@ -127,15 +137,28 @@ export default function BibleSearch() {
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-5 py-3 sm:px-8">
-        <button
-          onClick={() => { setQuery(""); setMode("search"); }}
-          aria-label="Just Bible 홈으로"
-          className="cursor-pointer font-[family-name:var(--font-title)] text-2xl tracking-tight transition-opacity hover:opacity-70"
-          style={{ WebkitTextStroke: "0.8px currentColor" }}
-        >
-          JB
-        </button>
+      <header className={`fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-5 py-3 transition-[border-color,background-color] duration-200 sm:px-8 ${
+        isScrolled
+          ? "border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80"
+          : "border-b border-transparent"
+      }`}>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => { setQuery(""); setMode("search"); }}
+            aria-label="Just Bible 홈으로"
+            className="cursor-pointer font-[family-name:var(--font-title)] text-2xl tracking-tight transition-opacity hover:opacity-70"
+            style={{ WebkitTextStroke: "0.8px currentColor" }}
+          >
+            JB
+          </button>
+          <nav className="hidden items-center gap-3 text-xs text-gray-400 sm:flex dark:text-gray-500">
+            <Link href="/about" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">소개</Link>
+            <span>·</span>
+            <Link href="/terms" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">약관</Link>
+            <span>·</span>
+            <Link href="/privacy" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">개인정보</Link>
+          </nav>
+        </div>
         <div className="flex items-center gap-4">
           <a href="https://forms.gle/gX6zrLTHfRt6Hyj97" target="_blank" rel="noopener noreferrer"
             className="rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition-colors
