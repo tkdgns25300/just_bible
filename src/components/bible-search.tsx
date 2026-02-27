@@ -151,7 +151,7 @@ export default function BibleSearch() {
           JB
         </button>
         <div className="flex items-center gap-4">
-          <nav className="hidden items-center gap-3 text-sm text-gray-400 sm:flex dark:text-gray-500">
+          <nav className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500">
             <Link href="/about" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">소개</Link>
             <span>·</span>
             <Link href="/terms" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">약관</Link>
