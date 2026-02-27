@@ -25,7 +25,9 @@ export default function SearchBar({ value, onChange, isLoading }: SearchBarProps
 
   return (
     <div className="w-full max-w-2xl px-4">
+      <label htmlFor="bible-search-input" className="sr-only">성경 검색</label>
       <input
+        id="bible-search-input"
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}

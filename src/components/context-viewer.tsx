@@ -59,6 +59,8 @@ export default function ContextViewer({
 
   return (
     <div
+      role="dialog"
+      aria-label={`${bookName} ${chapter.chapter}장`}
       className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ animation: "fadeIn 0.2s ease-out" }}
       onClick={(e) => {
@@ -78,6 +80,7 @@ export default function ContextViewer({
           </div>
           <button
             onClick={onClose}
+            aria-label="닫기"
             className="rounded-full p-2 text-gray-400 transition-colors
               hover:bg-gray-100 hover:text-gray-600
               dark:hover:bg-gray-800 dark:hover:text-gray-300"

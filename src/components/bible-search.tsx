@@ -130,6 +130,7 @@ export default function BibleSearch() {
       <header className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-5 py-3 sm:px-8">
         <button
           onClick={() => { setQuery(""); setMode("search"); }}
+          aria-label="Just Bible 홈으로"
           className="cursor-pointer font-[family-name:var(--font-title)] text-2xl tracking-tight transition-opacity hover:opacity-70"
           style={{ WebkitTextStroke: "0.8px currentColor" }}
         >
@@ -164,10 +165,12 @@ export default function BibleSearch() {
         </p>
       )}
       {(!hasResults || isReadMode) && (
-        <div className="mb-8 flex w-full max-w-md rounded-2xl bg-gray-100 p-1.5 dark:bg-gray-800">
+        <div role="tablist" aria-label="모드 선택" className="mb-8 flex w-full max-w-md rounded-2xl bg-gray-100 p-1.5 dark:bg-gray-800">
           {(["search", "read"] as const).map((m) => (
             <button
               key={m}
+              role="tab"
+              aria-selected={mode === m}
               onClick={() => setMode(m)}
               className={`flex-1 rounded-xl py-3 text-base font-semibold transition-all duration-200
                 sm:text-lg

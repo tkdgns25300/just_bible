@@ -18,6 +18,7 @@ export default function FontSizeControl({ sizeIndex, onChange }: FontSizeControl
       <button
         onClick={() => onChange(sizeIndex - 1)}
         disabled={isMin}
+        aria-label="글자 크기 줄이기"
         className="w-9 rounded-md py-1.5 text-sm transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300
@@ -32,6 +33,7 @@ export default function FontSizeControl({ sizeIndex, onChange }: FontSizeControl
       <button
         onClick={() => onChange(sizeIndex + 1)}
         disabled={isMax}
+        aria-label="글자 크기 키우기"
         className="w-9 rounded-md py-1.5 text-lg transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300

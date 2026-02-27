@@ -18,6 +18,7 @@ export default function FontWeightControl({ weightIndex, onChange }: FontWeightC
       <button
         onClick={() => onChange(weightIndex - 1)}
         disabled={isMin}
+        aria-label="글자 두께 줄이기"
         className="w-9 rounded-md py-1.5 text-sm font-light transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300
@@ -32,6 +33,7 @@ export default function FontWeightControl({ weightIndex, onChange }: FontWeightC
       <button
         onClick={() => onChange(weightIndex + 1)}
         disabled={isMax}
+        aria-label="글자 두께 늘리기"
         className="w-9 rounded-md py-1.5 text-sm font-bold transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300

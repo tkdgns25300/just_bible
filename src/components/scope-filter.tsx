@@ -34,7 +34,9 @@ export default function ScopeFilter({ scope, onChange }: ScopeFilterProps) {
           {label}
         </button>
       ))}
+      <label htmlFor="scope-book-select" className="sr-only">특정 권 선택</label>
       <select
+        id="scope-book-select"
         value={isBookSelected ? String(scope) : ""}
         onChange={(e) => {
           const val = e.target.value;

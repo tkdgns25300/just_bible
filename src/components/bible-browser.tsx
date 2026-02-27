@@ -131,7 +131,10 @@ export default function BibleBrowser({
   return (
     <div className={`w-full ${isCompareMode ? "max-w-5xl" : "max-w-2xl"}`}>
       <div className="mx-auto grid w-full max-w-xs grid-cols-2 gap-2 sm:flex sm:w-auto sm:max-w-none sm:justify-center">
+        <label htmlFor="browser-book-select" className="sr-only">성경 선택</label>
         <select
+          id="browser-book-select"
+          aria-label="성경 선택"
           value={selectedBookId}
           onChange={(e) => handleBookChange(Number(e.target.value))}
           className="w-full rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600
@@ -151,6 +154,7 @@ export default function BibleBrowser({
           </optgroup>
         </select>
         <select
+          aria-label="장 선택"
           value={selectedChapter}
           onChange={(e) => handleChapterChange(Number(e.target.value))}
           className="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600
@@ -163,6 +167,7 @@ export default function BibleBrowser({
           ))}
         </select>
         <select
+          aria-label="시작절 선택"
           value={startVerse}
           onChange={(e) => handleStartVerseChange(Number(e.target.value))}
           className="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600
@@ -176,6 +181,7 @@ export default function BibleBrowser({
           ))}
         </select>
         <select
+          aria-label="끝절 선택"
           value={endVerse}
           onChange={(e) => handleEndVerseChange(Number(e.target.value))}
           className="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600
@@ -215,7 +221,7 @@ export default function BibleBrowser({
                       onClick={isTtsPaused ? onTtsResume : onTtsPause}
                       className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
                         hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                      title={isTtsPaused ? "재생" : "일시정지"}
+                      aria-label={isTtsPaused ? "재생" : "일시정지"}
                     >
                       {isTtsPaused ? <PlayIcon /> : <PauseIcon />}
                     </button>
@@ -223,7 +229,7 @@ export default function BibleBrowser({
                       onClick={onTtsCancel}
                       className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
                         hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                      title="중지"
+                      aria-label="중지"
                     >
                       <StopIcon />
                     </button>

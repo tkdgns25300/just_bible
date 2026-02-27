@@ -326,7 +326,7 @@ export default function SearchResults({
                       onClick={isTtsPaused ? onTtsResume : onTtsPause}
                       className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
                         hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                      title={isTtsPaused ? "재생" : "일시정지"}
+                      aria-label={isTtsPaused ? "재생" : "일시정지"}
                     >
                       {isTtsPaused ? <PlayIcon /> : <PauseIcon />}
                     </button>
@@ -334,7 +334,7 @@ export default function SearchResults({
                       onClick={onTtsCancel}
                       className="rounded-full bg-gray-100 p-2.5 text-gray-700 transition-colors
                         hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                      title="중지"
+                      aria-label="중지"
                     >
                       <StopIcon />
                     </button>
@@ -376,6 +376,7 @@ export default function SearchResults({
                           e.stopPropagation();
                           handleCopy(result);
                         }}
+                        aria-label={`${result.bookName} ${result.chapter}:${result.verse} 복사`}
                         className="text-gray-300 opacity-0 transition-opacity duration-150
                           hover:text-gray-500 group-hover:opacity-100
                           dark:text-gray-600 dark:hover:text-gray-400"
@@ -409,6 +410,7 @@ export default function SearchResults({
           </button>
           <button
             onClick={() => setSelectedIndices(new Set())}
+            aria-label="선택 해제"
             className="rounded-full bg-gray-200 p-2.5 text-gray-500
               shadow-lg transition-colors hover:bg-gray-300
               dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600"

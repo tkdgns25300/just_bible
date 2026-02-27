@@ -21,6 +21,7 @@ export default function TtsRateControl({ rate, onChange }: TtsRateControlProps) 
       <button
         onClick={() => onChange(Math.max(TTS_RATE_MIN, rate - TTS_RATE_STEP))}
         disabled={isMin}
+        aria-label="읽기 속도 줄이기"
         className="w-9 rounded-md py-1.5 text-sm transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300
@@ -35,6 +36,7 @@ export default function TtsRateControl({ rate, onChange }: TtsRateControlProps) 
       <button
         onClick={() => onChange(Math.min(TTS_RATE_MAX, rate + TTS_RATE_STEP))}
         disabled={isMax}
+        aria-label="읽기 속도 높이기"
         className="w-9 rounded-md py-1.5 text-sm transition-colors duration-150
           enabled:hover:bg-gray-200 enabled:active:bg-gray-300
           disabled:text-gray-300
