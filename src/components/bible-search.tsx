@@ -150,8 +150,8 @@ export default function BibleSearch() {
         >
           JB
         </button>
-        <div className="flex items-center gap-4">
-          <nav className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <nav className="flex items-center gap-2 text-xs text-gray-400 sm:gap-3 sm:text-sm dark:text-gray-500">
             <Link href="/about" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">소개</Link>
             <span>·</span>
             <Link href="/terms" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">약관</Link>
@@ -159,8 +159,8 @@ export default function BibleSearch() {
             <Link href="/privacy" className="transition-colors hover:text-gray-600 dark:hover:text-gray-300">개인정보</Link>
           </nav>
           <a href="https://forms.gle/gX6zrLTHfRt6Hyj97" target="_blank" rel="noopener noreferrer"
-            className="rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition-colors
-              hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300">
+            className="hidden rounded-full bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition-colors
+              hover:bg-gray-700 sm:inline-block dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-300">
             의견 보내기
           </a>
           <ThemeToggle />
