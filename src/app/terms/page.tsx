@@ -5,6 +5,12 @@ import PageHeader from "@/components/page-header";
 export const metadata: Metadata = {
   title: "이용약관 - Just Bible",
   description: "Just Bible 이용약관",
+  alternates: { canonical: "/terms" },
+  openGraph: {
+    title: "이용약관 - Just Bible",
+    description: "Just Bible 이용약관",
+    url: "https://justbible.life/terms",
+  },
 };
 
 export default function TermsPage() {

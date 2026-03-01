@@ -5,6 +5,12 @@ import PageHeader from "@/components/page-header";
 export const metadata: Metadata = {
   title: "소개 - Just Bible",
   description: "Just Bible 서비스 소개",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "소개 - Just Bible",
+    description: "Just Bible 서비스 소개",
+    url: "https://justbible.life/about",
+  },
 };
 
 export default function AboutPage() {
