@@ -60,6 +60,7 @@ export default function ContextViewer({
   return (
     <div
       role="dialog"
+      aria-modal="true"
       aria-label={`${bookName} ${chapter.chapter}장`}
       className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ animation: "fadeIn 0.2s ease-out" }}

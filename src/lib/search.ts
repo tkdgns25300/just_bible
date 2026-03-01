@@ -1,4 +1,4 @@
-import { BOOKS, type BookMeta } from "@/constants/bible";
+import { BOOKS } from "@/constants/bible";
 import { MAX_KEYWORD_RESULTS, type SearchScope } from "@/constants/search";
 import { getChosung, isChosung } from "@/lib/chosung";
 import type { BibleTranslation, Book } from "@/types/bible";
