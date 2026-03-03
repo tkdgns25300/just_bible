@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const STORAGE_KEY = "just-bible-install-dismissed";
-const DISMISS_DAYS = 7;
+const DISMISS_DAYS = 1;
 const SHOW_DELAY_MS = 30_000;
 
 interface BeforeInstallPromptEvent extends Event {
