@@ -34,6 +34,7 @@ import ScopeFilter from "@/components/scope-filter";
 import ThemeToggle from "@/components/theme-toggle";
 import TtsRateControl from "@/components/tts-rate-control";
 import BibleBrowser from "@/components/bible-browser";
+import InstallPrompt from "@/components/install-prompt";
 
 type Mode = "search" | "read";
 
@@ -492,6 +493,7 @@ export default function BibleSearch() {
       </div>
       <p className="text-xs text-gray-300 dark:text-gray-600">© 2025 Just Bible</p>
     </footer>
+    <InstallPrompt />
     </>
   );
 }
