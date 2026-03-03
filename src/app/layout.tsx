@@ -87,6 +87,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${damion.variable} antialiased`}
+        suppressHydrationWarning
       >
         {children}
       </body>
