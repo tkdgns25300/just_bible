@@ -37,3 +37,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw data (large files)
+data/raw/주석-메튜헨리주석/
