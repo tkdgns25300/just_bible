@@ -61,6 +61,13 @@ export default function PrivacyPage() {
               </a>
             </li>
             <li>
+              <strong className="dark:text-gray-100">Microsoft Clarity</strong>: 사용자 행동 분석(히트맵, 세션 리플레이 등)을 위해 쿠키 및 유사 기술을 사용할 수 있습니다. 개인을 식별하지 않는 익명 데이터를 수집합니다.{" "}
+              <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener noreferrer"
+                className="text-blue-600 underline dark:text-blue-400">
+                Microsoft 개인정보처리방침
+              </a>
+            </li>
+            <li>
               <strong className="dark:text-gray-100">Google Fonts</strong>: 웹 폰트 제공을 위해 Google 서버에 접속합니다.
             </li>
           </ul>
